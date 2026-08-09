@@ -1428,7 +1428,8 @@ function loadPortal() {
 
   if (!isAdmin) {
     document.getElementById('memberAvatarLg').textContent = initials;
-    document.getElementById('navName').textContent = state.customerName.split(' ')[0] + ' ' + state.customerName.split(' ')[1][0] + '.';
+    const nameParts = state.customerName.trim().split(/\s+/);
+    document.getElementById('navName').textContent = nameParts.length > 1 ? `${nameParts[0]} ${nameParts[1][0]}.` : nameParts[0];
     document.getElementById('memberName').textContent = state.customerName;
     document.getElementById('memberMeta').textContent = `ID: ${state.membershipId} · ${state.vehicle} · ${state.plate}`;
   } else {
