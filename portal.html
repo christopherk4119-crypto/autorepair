@@ -691,6 +691,70 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
   }
   .toast.removing { animation: slideOut 0.3s ease forwards; }
 
+  /* PHONE MODAL */
+  .phone-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .phone-modal-overlay.active { display: flex; }
+  .phone-modal-box {
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.35);
+    border-radius: 12px;
+    padding: 44px 32px 36px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalPopIn 0.2s ease;
+  }
+  @keyframes modalPopIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .phone-modal-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+  }
+  .phone-modal-close:hover { color: var(--white); }
+  .phone-modal-icon { font-size: 40px; margin-bottom: 12px; }
+  .phone-modal-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .phone-modal-sub { font-size: 13px; color: var(--gray-light); margin-bottom: 22px; line-height: 1.5; }
+  .phone-modal-number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 30px;
+    letter-spacing: 1px;
+    color: var(--white);
+    background: var(--red);
+    padding: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-bottom: 16px;
+  }
+  .phone-modal-number:hover { background: var(--red-light); }
+  .phone-modal-hours { font-size: 12px; color: var(--gray); }
+
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
     .member-card { flex-direction: column; }
@@ -740,6 +804,18 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
 
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- PHONE MODAL -->
+<div class="phone-modal-overlay" id="phoneModalOverlay" onclick="if(event.target === this) closePhoneModal()">
+  <div class="phone-modal-box">
+    <button class="phone-modal-close" onclick="closePhoneModal()" aria-label="Close">×</button>
+    <div class="phone-modal-icon">📞</div>
+    <div class="phone-modal-title" id="phoneModalTitle">Need Help?</div>
+    <p class="phone-modal-sub">Tap below to call us now for immediate assistance.</p>
+    <a href="tel:5874354463" class="phone-modal-number">(587) 435-4463</a>
+    <p class="phone-modal-hours">Available 24 hours a day, 7 days a week</p>
+  </div>
+</div>
 
 <!-- PORTAL -->
 <div class="portal" id="portalScreen">
@@ -942,13 +1018,13 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <div class="assistance-icon">🔋</div>
           <div class="assistance-title">Battery Boost</div>
           <div class="assistance-desc">Dead battery? We'll come to you and get you running again.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Battery Boost', this)">Request Now</button>
+          <button class="btn-outline-red" onclick="showPhoneModal('Battery Boost')">Request Now</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🛞</div>
           <div class="assistance-title">Mobile Tire Help</div>
           <div class="assistance-desc">Flat tire anywhere within 100km. We bring the fix to you.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Mobile Tire Help', this)">Request Now</button>
+          <button class="btn-outline-red" onclick="showPhoneModal('Mobile Tire Help')">Request Now</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🚗</div>
@@ -960,19 +1036,19 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <div class="assistance-icon">🚛</div>
           <div class="assistance-title">Towing Service</div>
           <div class="assistance-desc">Towing within 100km. Available with Standard and Premium plans.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Towing', this)">Request Tow</button>
+          <button class="btn-outline-red" onclick="showPhoneModal('Towing')">Request Tow</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🚌</div>
           <div class="assistance-title">Shuttle Service</div>
           <div class="assistance-desc">Premium plan includes shuttle while your vehicle is being serviced.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Shuttle', this)">Request Shuttle</button>
+          <button class="btn-outline-red" onclick="showPhoneModal('Shuttle')">Request Shuttle</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">📦</div>
           <div class="assistance-title">Pick-Up & Drop-Off</div>
           <div class="assistance-desc">We pick up your vehicle and return it when done. Premium only.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Pick-Up & Drop-Off', this)">Request Pick-Up</button>
+          <button class="btn-outline-red" onclick="showPhoneModal('Pick-Up & Drop-Off')">Request Pick-Up</button>
         </div>
       </div>
       <p style="font-size:12px;color:var(--gray);margin-top:20px;">All mobile assistance is subject to availability and within 100km of Calgary. Emergency services are available 24/7.</p>
@@ -2368,46 +2444,13 @@ async function deleteMember(membershipId, knownName) {
   }
 }
 
-async function requestAssistance(type, btn) {
-  const originalLabel = btn ? btn.textContent : '';
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+function showPhoneModal(type) {
+  document.getElementById('phoneModalTitle').textContent = type ? `Need ${type}?` : 'Need Help?';
+  document.getElementById('phoneModalOverlay').classList.add('active');
+}
 
-  try {
-    const res = await fetch('https://formspree.io/f/mqeopqln', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        _subject: '🚨 ASSISTANCE REQUEST — ' + type,
-        request_type: type,
-        member: state.customerName,
-        membership_id: state.membershipId,
-        plan: state.plan,
-        vehicle: state.vehicle,
-        plate: state.plate,
-        requested_at: new Date().toLocaleString('en-CA'),
-        message: `URGENT ASSISTANCE REQUEST\n\nType: ${type}\nMember: ${state.customerName}\nMembership ID: ${state.membershipId}\nPlan: ${state.plan}\nVehicle: ${state.vehicle}\nPlate: ${state.plate}\n\nPlease contact this member immediately.`
-      })
-    });
-
-    let responseBody = null;
-    try { responseBody = await res.json(); } catch (parseErr) { /* non-JSON response */ }
-
-    if (!res.ok) {
-      console.error('Formspree request failed:', res.status, responseBody);
-      const reason = responseBody && responseBody.errors
-        ? responseBody.errors.map(e => e.message).join('; ')
-        : `HTTP ${res.status}`;
-      throw new Error(reason);
-    }
-
-    console.log('Formspree accepted the request:', responseBody);
-    showToast('success', 'Assistance Requested', `Your ${type} request has been sent. We'll contact you shortly — or call (587) 435-4463 for anything urgent.`, 7000);
-  } catch (err) {
-    showToast('error', 'Could Not Send Request', `${err.message || 'Unknown error'} — please call us directly at (587) 435-4463 for ${type}.`, 10000);
-    console.error('requestAssistance failed:', err);
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
-  }
+function closePhoneModal() {
+  document.getElementById('phoneModalOverlay').classList.remove('active');
 }
 
 function showTab(name, btn) {
