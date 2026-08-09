@@ -279,12 +279,29 @@
     margin-bottom: 12px;
   }
 
-  .acceptance-box p {
+  .acceptance-box label {
     font-size: 14px;
     color: var(--gray-light);
     display: flex;
     gap: 10px;
     align-items: flex-start;
+    cursor: pointer;
+  }
+
+  .acceptance-box input[type="checkbox"] {
+    margin-top: 3px;
+    width: 17px;
+    height: 17px;
+    accent-color: var(--red);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .acceptance-note {
+    font-size: 12px;
+    color: #10B981;
+    margin-top: 14px;
+    display: none;
   }
 
   .contact-box {
@@ -392,6 +409,25 @@ function closeMenu() {
   nav.classList.remove('open');
   btn.classList.remove('active');
 }
+
+const TERMS_AGREED_KEY = 'arpxTermsAgreed';
+
+function handleAcceptTerms(checkbox) {
+  const note = document.getElementById('acceptTermsNote');
+  if (checkbox.checked) {
+    localStorage.setItem(TERMS_AGREED_KEY, 'true');
+    note.style.display = 'block';
+  } else {
+    note.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem(TERMS_AGREED_KEY) === 'true') {
+    document.getElementById('acceptTermsCheckbox').checked = true;
+    document.getElementById('acceptTermsNote').style.display = 'block';
+  }
+});
 </script>
 
 <!-- PAGE HEADER -->
@@ -692,7 +728,11 @@ function closeMenu() {
 
     <div class="acceptance-box">
       <h3>Required Acceptance Before Purchase</h3>
-      <p><span style="color:var(--red);">☐</span> I have read and agree to the Membership Terms & Conditions and understand that my membership will be governed by this agreement.</p>
+      <label>
+        <input type="checkbox" id="acceptTermsCheckbox" onchange="handleAcceptTerms(this)" />
+        <span>I have read and agree to the Membership Terms & Conditions and understand that my membership will be governed by this agreement.</span>
+      </label>
+      <p class="acceptance-note" id="acceptTermsNote">✓ Saved — this will already be checked when you go to select a plan or book an appointment.</p>
     </div>
   </div>
 </div>

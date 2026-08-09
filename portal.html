@@ -1422,7 +1422,7 @@ function renderAll() {
   renderAppointments();
   renderAdminBenefits();
   const bookTerms = document.getElementById('bookTermsCheckbox');
-  if (bookTerms) { bookTerms.checked = false; }
+  if (bookTerms) { bookTerms.checked = (localStorage.getItem('arpxTermsAgreed') === 'true'); }
   updateBookButtonState();
 }
 
@@ -1431,6 +1431,7 @@ function updateBookButtonState() {
   const btn = document.getElementById('bookSubmitBtn');
   if (!checkbox || !btn) return;
   if (checkbox.checked) {
+    localStorage.setItem('arpxTermsAgreed', 'true');
     btn.classList.remove('btn-disabled');
   } else {
     btn.classList.add('btn-disabled');

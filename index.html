@@ -1316,10 +1316,15 @@ function closeMenu() {
 </footer>
 
 <script>
+const TERMS_AGREED_KEY = 'arpxTermsAgreed';
+function markTermsAgreed() { localStorage.setItem(TERMS_AGREED_KEY, 'true'); }
+function isTermsAgreed() { return localStorage.getItem(TERMS_AGREED_KEY) === 'true'; }
+
 function updatePlanButtonState(plan) {
   const checkbox = document.getElementById('terms-' + plan);
   const btn = document.getElementById('planBtn-' + plan);
   if (checkbox.checked) {
+    markTermsAgreed();
     btn.classList.remove('btn-disabled');
     btn.removeAttribute('aria-disabled');
   } else {
@@ -1343,11 +1348,22 @@ function updateBookingButtonState() {
   const checkbox = document.getElementById('terms-booking');
   const btn = document.getElementById('bookSubmitBtn');
   if (checkbox.checked) {
+    markTermsAgreed();
     btn.classList.remove('btn-disabled');
   } else {
     btn.classList.add('btn-disabled');
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!isTermsAgreed()) return;
+  ['basic', 'standard', 'premium'].forEach(plan => {
+    const cb = document.getElementById('terms-' + plan);
+    if (cb) { cb.checked = true; updatePlanButtonState(plan); }
+  });
+  const bookingCb = document.getElementById('terms-booking');
+  if (bookingCb) { bookingCb.checked = true; updateBookingButtonState(); }
+});
 </script>
 
 </body>
