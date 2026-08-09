@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Auto Repair Xperts Inc — Calgary's #1 Auto Repair Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0000;
+    --red-light: #FF1A3C;
+    --black: #0A0A0A;
+    --black-2: #111111;
+    --black-3: #1A1A1A;
+    --black-4: #222222;
+    --gray: #888888;
+    --gray-light: #AAAAAA;
+    --white: #FFFFFF;
+    --off-white: #F5F5F5;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,16,46,0.3);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--red); }
+
+  .nav-cta {
+    background: var(--red);
+    color: var(--white) !important;
+    padding: 10px 22px;
+    border-radius: 2px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--red-light) !important; color: var(--white) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    padding: 70px 5% 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(200,16,46,0.12) 0%, transparent 70%),
+      linear-gradient(180deg, rgba(10,10,10,0) 60%, var(--black) 100%);
+    z-index: 0;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,16,46,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,16,46,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,16,46,0.15);
+    border: 1px solid rgba(200,16,46,0.4);
+    color: var(--red-light);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--red-light);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 8vw, 110px);
+    line-height: 0.95;
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .accent { color: var(--red); }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--gray-light);
+    max-width: 520px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 16px 36px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--red-light); transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 15px 36px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { border-color: var(--red); color: var(--red); }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap;
+  }
+
+  .hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--red);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 13px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* TRUST BAR */
+  .trust-bar {
+    background: var(--red-dark);
+    padding: 16px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.9);
+    text-transform: uppercase;
+  }
+
+  .trust-icon {
+    font-size: 18px;
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 100px 5%;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--gray-light);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* SERVICES */
+  .services { background: var(--black-2); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-top: 60px;
+    border: 2px solid var(--black-4);
+  }
+
+  .service-card {
+    background: var(--black-3);
+    padding: 36px 32px;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.25s, border-color 0.25s;
+    cursor: default;
+  }
+
+  .service-card:hover {
+    background: var(--black-4);
+    border-color: rgba(200,16,46,0.3);
+  }
+
+  .service-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .service-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+
+  .service-card p {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+
+  .service-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    border: 1px solid var(--red-dark);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  /* WHY US */
+  .why-us {
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-us-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .why-list {
+    list-style: none;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .why-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .why-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1;
+    min-width: 40px;
+  }
+
+  .why-item-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--white);
+  }
+
+  .why-item-desc {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  .why-visual {
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.2);
+    border-radius: 4px;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-visual::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(200,16,46,0.15) 0%, transparent 70%);
+  }
+
+  .rating-big {
+    font-family: var(--font-display);
+    font-size: 96px;
+    color: var(--red);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stars {
+    font-size: 24px;
+    color: #FFD700;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+
+  .rating-label {
+    font-size: 14px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+  }
+
+  .rating-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 32px 0;
+  }
+
+  .cert-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cert-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--gray-light);
+  }
+
+  .cert-check {
+    width: 20px; height: 20px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  /* PLANS */
+  .plans { background: var(--black-2); }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .plan-card {
+    background: var(--black-3);
+    padding: 40px 32px;
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .plan-card:hover { transform: translateY(-4px); }
+
+  .plan-card.featured {
+    background: var(--black-4);
+    border-color: var(--red);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -1px; right: 24px;
+    background: var(--red);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+  }
+
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .plan-price {
+    font-family: var(--font-display);
+    font-size: 52px;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .plan-price span {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--gray);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .plan-value {
+    font-size: 13px;
+    color: var(--gray);
+    margin: 8px 0 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .plan-value strong { color: var(--red-light); }
+
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .plan-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--gray-light);
+  }
+
+  .plan-feature .check {
+    color: var(--red);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .plan-feature .dash {
+    color: var(--black-4);
+    flex-shrink: 0;
+  }
+
+  /* REVIEWS */
+  .reviews { background: var(--black); }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .review-card {
+    background: var(--black-3);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 32px;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .review-stars {
+    color: #FFD700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .review-text {
+    font-size: 15px;
+    color: var(--gray-light);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .review-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--red-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+
+  .review-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .review-sub {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  /* BOOK */
+  .book-section {
+    background: var(--black-2);
+  }
+
+  .book-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .book-form {
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.2);
+    padding: 40px;
+    border-radius: 2px;
+  }
+
+  .book-form h3 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--black-4);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white);
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: var(--font-body);
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--red);
+  }
+
+  .form-group select option {
+    background: var(--black-3);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* CONTACT */
+  .contact-info {
+    padding-top: 8px;
+  }
+
+  .contact-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .contact-item:last-child {
+    border-bottom: none;
+  }
+
+  .contact-icon-box {
+    width: 48px; height: 48px;
+    background: rgba(200,16,46,0.15);
+    border: 1px solid rgba(200,16,46,0.3);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+
+  .contact-value {
+    font-size: 16px;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .contact-value a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .contact-value a:hover { color: var(--red); }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(200,16,46,0.2);
+    padding: 48px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--red); }
+
+  /* TERMS AGREEMENT CHECKBOX */
+  .terms-agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--gray-light);
+    margin-bottom: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .terms-agree input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--red);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .terms-agree a {
+    color: var(--red-light);
+    text-decoration: underline;
+  }
+
+  .btn-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  /* OPEN BADGE */
+  .open-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,200,80,0.1);
+    border: 1px solid rgba(0,200,80,0.3);
+    color: #00C850;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  .open-dot {
+    width: 7px; height: 7px;
+    background: #00C850;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(10,10,10,0.98); border-bottom: 1px solid rgba(200,16,46,0.3); padding: 20px 5%; gap: 16px; z-index: 99; }
+    .nav-links.open { display: flex; }
+    .nav-links li { list-style: none; }
+    .nav-links a { font-size: 15px; padding: 8px 0; display: block; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .why-us-inner { grid-template-columns: 1fr; gap: 40px; }
+    .book-inner { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+  }
+  @media (min-width: 769px) {
+    .hamburger { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Auto Repair <span>Xperts</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#services" onclick="closeMenu()">Services</a></li>
+    <li><a href="#plans" onclick="closeMenu()">Memberships</a></li>
+    <li><a href="#reviews" onclick="closeMenu()">Reviews</a></li>
+    <li><a href="portal.html" onclick="closeMenu()">Member Portal</a></li>
+    <li><a href="#book" class="nav-cta" onclick="closeMenu()">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<script>
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('active');
+}
+</script>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="open-badge"><span class="open-dot"></span> Open 24 Hours</div>
+    <div class="hero-badge">Calgary's Most Trusted Auto Shop</div>
+    <h1>WE FIX<br>CARS <span class="accent">RIGHT.</span><br>THE FIRST TIME.</h1>
+    <p>Honest diagnostics, transparent pricing, and expert repairs — no upselling, no runaround. Just results you can count on.</p>
+    <div class="hero-cta-group">
+      <a href="#book" class="btn-primary">Book an Appointment</a>
+      <a href="tel:5874354463" class="btn-secondary">📞 (587) 435-4463</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">5.0★</div>
+        <div class="hero-stat-label">Google Rating</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">24/7</div>
+        <div class="hero-stat-label">Always Open</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">100%</div>
+        <div class="hero-stat-label">Transparent Pricing</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Membership Plans</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">🛡️</span> Licensed & Insured</div>
+  <div class="trust-item"><span class="trust-icon">💳</span> Credit & Debit Accepted</div>
+  <div class="trust-item"><span class="trust-icon">🔍</span> Free Diagnostics Consultation</div>
+  <div class="trust-item"><span class="trust-icon">📍</span> Calgary, AB</div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">What We Do</div>
+  <h2 class="section-title">EXPERT AUTO<br>SERVICES</h2>
+  <p class="section-sub">From routine maintenance to complex repairs — we handle it all with precision and honesty.</p>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">🔧</span>
+      <h3>Engine Diagnostics</h3>
+      <p>Dashboard lights got you worried? We run full diagnostics and tell you exactly what's wrong — and what can wait.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🛢️</span>
+      <h3>Oil Changes</h3>
+      <p>Synthetic oil changes done fast and done right. Protect your engine and stay ahead of wear.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🛞</span>
+      <h3>Tire Services</h3>
+      <p>Rotations, repairs, swaps and mobile assistance. We keep you rolling no matter what.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🔩</span>
+      <h3>Brake Service</h3>
+      <p>Front and rear brake pad replacement included in memberships. Your safety is not optional.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🔋</span>
+      <h3>Battery Services</h3>
+      <p>Battery replacement, boosts, and roadside assistance — we come to you within 100km.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🚗</span>
+      <h3>Full Detailing</h3>
+      <p>Interior and exterior detailing included in Standard and Premium plans. Your car deserves to look as good as it runs.</p>
+      <span class="service-tag">Standard & Premium</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-us">
+  <div class="why-us-inner">
+    <div>
+      <div class="section-label">Why Choose Us</div>
+      <h2 class="section-title">WE'RE DIFFERENT<br>AND WE PROVE IT.</h2>
+      <ul class="why-list">
+        <li class="why-item">
+          <div class="why-num">01</div>
+          <div>
+            <div class="why-item-title">Radical Transparency</div>
+            <div class="why-item-desc">We show you exactly what's wrong, what's urgent, and what can wait. No pressure. No upselling. Ever.</div>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">02</div>
+          <div>
+            <div class="why-item-title">Open 24 Hours</div>
+            <div class="why-item-desc">Car problems don't keep business hours. Neither do we. We're always available when you need us most.</div>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">03</div>
+          <div>
+            <div class="why-item-title">Membership Savings</div>
+            <div class="why-item-desc">Our plans save you thousands annually. Get up to $4,550 in value for $1,500/year with our Premium plan.</div>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">04</div>
+          <div>
+            <div class="why-item-title">Fast & Reliable</div>
+            <div class="why-item-desc">Premium members get priority scheduling, fast-track repairs, and pick-up and drop-off service.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="why-visual">
+      <div class="rating-big">5.0</div>
+      <div class="stars">★★★★★</div>
+      <div class="rating-label">Perfect Google Rating</div>
+      <hr class="rating-divider" />
+      <ul class="cert-list">
+        <li class="cert-item"><div class="cert-check">✓</div> Transparent diagnostics — always</li>
+        <li class="cert-item"><div class="cert-check">✓</div> Reasonable, upfront quotes</li>
+        <li class="cert-item"><div class="cert-check">✓</div> No upselling or overcharging</li>
+        <li class="cert-item"><div class="cert-check">✓</div> Fast and reliable service</li>
+        <li class="cert-item"><div class="cert-check">✓</div> Accepts credit & debit</li>
+        <li class="cert-item"><div class="cert-check">✓</div> Open 24 hours, 7 days a week</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="plans" id="plans">
+  <div class="section-label">Membership Plans</div>
+  <h2 class="section-title">SAVE THOUSANDS<br>EVERY YEAR.</h2>
+  <p class="section-sub">Choose a plan that fits your driving life. All plans include labour discounts, inspections, oil changes and more.</p>
+
+  <div class="plans-grid">
+    <!-- BASIC -->
+    <div class="plan-card">
+      <div class="plan-name">Basic</div>
+      <div class="plan-price">$600<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$1,630</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 5% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 General Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Secondary Inspection</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Tire Rotation</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Dashboard Diagnostic</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Tune-Up</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-basic" onchange="updatePlanButtonState('basic')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+      </label>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-45546f5c391a4948846d0530f3198b619ee111c0ff924edca03d17b1ffc2329f6dc2d0b209fc4b868fb22afd7ee4ba4b-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-basic" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'basic')">Get Basic Plan</a>
+    </div>
+
+    <!-- STANDARD -->
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Standard</div>
+      <div class="plan-price">$900<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$2,470</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 7% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 General Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Secondary Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Tire Repairs</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Dashboard Diagnostics</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 6 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Belt Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Battery Boost (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Exterior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Interior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Towing (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> Priority Scheduling</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-standard" onchange="updatePlanButtonState('standard')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+      </label>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-2c6d0810fa6e415ebefcb1203b34752219e211a425834340889b9f925269fbbd6f015c90a08c49ccb23f36bf6f6feacc-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-standard" class="btn-primary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'standard')">Get Standard Plan</a>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="plan-card">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">$1,500<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$4,550</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 10% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> Up to 10 Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Brake Pad Replacements</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Tire Repairs + Mobile</li>
+        <li class="plan-feature"><span class="check">✓</span> Up to 10 Diagnostics</li>
+        <li class="plan-feature"><span class="check">✓</span> 7 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 8 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Belt Replacements</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Battery Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Battery Boosts (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Anti-Rust Coating</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Exterior + 2 Interior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Emergency Roadside (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Towing (100km)</span></li>
+        <li class="plan-feature"><span class="check">✓</span> Shuttle + Pick-Up & Drop-Off</li>
+        <li class="plan-feature"><span class="check">✓</span> VIP Priority + Fast-Track</li>
+        <li class="plan-feature"><span class="check">✓</span> Loaner Vehicle (Subject to Avail.)</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-premium" onchange="updatePlanButtonState('premium')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+      </label>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-264955efd3f840128c84224b8b50286cc5e46bb5859c4529b223131232f1dcb99c09b84a91d04459be4cb2381be63755-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-premium" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'premium')">Get Premium Plan</a>
+    </div>
+  </div>
+
+  <p style="text-align:center;margin-top:32px;font-size:14px;color:var(--gray);">
+    Have multiple vehicles? <a href="#book" style="color:var(--red);text-decoration:none;font-weight:600;">Contact us for bundle pricing →</a>
+  </p>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="section-label">Customer Reviews</div>
+  <h2 class="section-title">DON'T TAKE<br>OUR WORD FOR IT.</h2>
+  <p class="section-sub">Real customers. Real results. See why Calgary trusts Auto Repair Xperts.</p>
+
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"High competency with perfect job delivery. His good conduct toward the customer is at the highest rate. Keep it up and keep the fire burning."</p>
+      <div class="review-author">
+        <div class="review-avatar">OA</div>
+        <div>
+          <div class="review-name">Olasunkanmi</div>
+          <div class="review-sub">Google Review · 6 months ago</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Excellent service delivery. What I like most is the fact that he's very transparent about diagnostics — he lets you know what is urgent and what can wait and how long you can save up for it."</p>
+      <div class="review-author">
+        <div class="review-avatar">DW</div>
+        <div>
+          <div class="review-name">Dr. Fadera Williams</div>
+          <div class="review-sub">Google Review · 6 months ago</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Great service and honest. He provided a clear explanation of the problem and a very reasonable quote. No upselling or overcharging. Fast and reliable!"</p>
+      <div class="review-author">
+        <div class="review-avatar">AW</div>
+        <div>
+          <div class="review-name">Annie Wei</div>
+          <div class="review-sub">Google Review · 1 month ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section class="book-section" id="book">
+  <div class="book-inner">
+    <div>
+      <div class="section-label">Book Now</div>
+      <h2 class="section-title">READY TO<br>GET STARTED?</h2>
+      <p class="section-sub">Book your appointment online or give us a call. We're available 24/7 and always ready to help.</p>
+      <div class="contact-info" style="margin-top:40px;">
+        <div class="contact-item">
+          <div class="contact-icon-box">📞</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value"><a href="tel:5874354463">(587) 435-4463</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">817 Sagehill Grove NW & 1115 48 Ave SE #4, Calgary, AB</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">🌐</div>
+          <div>
+            <div class="contact-label">Website</div>
+            <div class="contact-value"><a href="http://autorepairxperts.com" target="_blank">autorepairxperts.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">🕐</div>
+          <div>
+            <div class="contact-label">Hours</div>
+            <div class="contact-value">Open 24 Hours — 7 Days a Week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-form">
+      <h3>Book an Appointment</h3>
+      <form action="https://formspree.io/f/mqeopqln" method="POST">
+      <input type="hidden" name="_subject" value="New Booking Request — Auto Repair Xperts" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" placeholder="John" required />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" placeholder="Smith" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" name="phone" placeholder="(587) 000-0000" required />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="john@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Service Needed</label>
+        <select name="service" required>
+          <option value="">Select a service...</option>
+          <option>Oil Change</option>
+          <option>Engine Diagnostics</option>
+          <option>Brake Service</option>
+          <option>Tire Service</option>
+          <option>Battery Service</option>
+          <option>Full Inspection</option>
+          <option>Detailing</option>
+          <option>Membership Sign-Up</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" name="preferred_date" required />
+        </div>
+        <div class="form-group">
+          <label>Preferred Time</label>
+          <input type="time" name="preferred_time" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Additional Notes</label>
+        <textarea name="notes" placeholder="Tell us about your vehicle or any specific concerns..."></textarea>
+      </div>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-booking" name="agreed_to_terms" required onchange="updateBookingButtonState()" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+      </label>
+      <button type="submit" id="bookSubmitBtn" class="btn-primary btn-disabled" style="width:100%;">Submit Booking Request</button>
+      <p style="font-size:12px;color:var(--gray);margin-top:12px;text-align:center;">We'll confirm your appointment within 1 hour.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Auto Repair <span>Xperts</span></div>
+  <p class="footer-copy">© 2026 Auto Repair Xperts Inc. Calgary, Alberta. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#book">Book</a></li>
+    <li><a href="terms.html">Terms & Conditions</a></li>
+    <li><a href="tel:5874354463">Call Us</a></li>
+  </ul>
+</footer>
+
+<script>
+function updatePlanButtonState(plan) {
+  const checkbox = document.getElementById('terms-' + plan);
+  const btn = document.getElementById('planBtn-' + plan);
+  if (checkbox.checked) {
+    btn.classList.remove('btn-disabled');
+    btn.removeAttribute('aria-disabled');
+  } else {
+    btn.classList.add('btn-disabled');
+    btn.setAttribute('aria-disabled', 'true');
+  }
+}
+
+function handlePlanClick(e, plan) {
+  const checkbox = document.getElementById('terms-' + plan);
+  if (!checkbox.checked) {
+    e.preventDefault();
+    alert('Please agree to the Membership Terms & Conditions before continuing.');
+    checkbox.focus();
+    return false;
+  }
+  return true;
+}
+
+function updateBookingButtonState() {
+  const checkbox = document.getElementById('terms-booking');
+  const btn = document.getElementById('bookSubmitBtn');
+  if (checkbox.checked) {
+    btn.classList.remove('btn-disabled');
+  } else {
+    btn.classList.add('btn-disabled');
+  }
+}
+</script>
+
+</body>
+</html>

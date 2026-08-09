@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Member Portal — Auto Repair Xperts</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<script>
+const QUICKBOOKS_BASIC = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-45546f5c391a4948846d0530f3198b619ee111c0ff924edca03d17b1ffc2329f6dc2d0b209fc4b868fb22afd7ee4ba4b-0?locale=EN_CA&cta=saveandcopylink';
+const QUICKBOOKS_STANDARD = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-2c6d0810fa6e415ebefcb1203b34752219e211a425834340889b9f925269fbbd6f015c90a08c49ccb23f36bf6f6feacc-0?locale=EN_CA&cta=saveandcopylink';
+const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-264955efd3f840128c84224b8b50286cc5e46bb5859c4529b223131232f1dcb99c09b84a91d04459be4cb2381be63755-0?locale=EN_CA&cta=saveandcopylink';
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0000;
+    --red-light: #FF1A3C;
+    --black: #0A0A0A;
+    --black-2: #111111;
+    --black-3: #1A1A1A;
+    --black-4: #222222;
+    --black-5: #2A2A2A;
+    --gray: #888888;
+    --gray-light: #AAAAAA;
+    --white: #FFFFFF;
+    --green: #00C850;
+    --green-bg: rgba(0,200,80,0.1);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* LOGIN SCREEN */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(200,16,46,0.08) 0%, transparent 70%);
+  }
+
+  .login-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,16,46,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,16,46,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .login-box {
+    position: relative;
+    z-index: 1;
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.25);
+    padding: 48px 44px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 4px;
+  }
+
+  .login-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .login-logo span { color: var(--red); }
+
+  .login-sub {
+    font-size: 13px;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 36px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: var(--black-4);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--white);
+    padding: 13px 16px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--red);
+  }
+
+  .form-group select option { background: var(--black-3); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    width: 100%;
+    transition: background 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .btn-primary:hover { background: var(--red-light); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gray-light);
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .btn-secondary:hover { border-color: var(--red); color: var(--red); }
+
+  .terms-agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--gray-light);
+    margin: 4px 0 16px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .terms-agree input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--red);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .terms-agree a { color: var(--red-light); text-decoration: underline; }
+
+  .btn-disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+
+  .btn-outline-red {
+    background: transparent;
+    color: var(--red);
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--red-dark);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .btn-outline-red:hover { background: rgba(200,16,46,0.1); }
+
+  .login-back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--gray);
+    text-decoration: none;
+  }
+
+  .login-back:hover { color: var(--red); }
+
+  .login-legal {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--gray);
+    text-decoration: none;
+  }
+
+  .login-legal:hover { color: var(--red); }
+
+  /* PORTAL FOOTER */
+  .portal-footer {
+    padding: 28px 5%;
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .portal-footer a {
+    color: var(--gray);
+    text-decoration: none;
+    margin-left: 14px;
+  }
+
+  .portal-footer a:hover { color: var(--red); }
+
+  /* PORTAL LAYOUT */
+  .portal { display: none; min-height: 100vh; }
+
+  .portal-nav {
+    background: rgba(10,10,10,0.98);
+    border-bottom: 1px solid rgba(200,16,46,0.2);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .portal-logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .portal-logo span { color: var(--red); }
+
+  .portal-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .portal-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--red-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--white);
+  }
+
+  .portal-username {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* TABS */
+  .tabs-bar {
+    background: var(--black-2);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 0 28px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    background: transparent;
+    color: var(--gray);
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 16px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: var(--font-body);
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+  .tab-content { display: none; padding: 32px 28px; }
+  .tab-content.active { display: block; }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--black-3);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 24px 20px;
+    border-radius: 4px;
+  }
+
+  .stat-icon {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .stat-value.red { color: var(--red); }
+
+  .stat-detail {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* MEMBER INFO CARD */
+  .member-card {
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.2);
+    border-radius: 4px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .member-info { display: flex; align-items: center; gap: 20px; }
+
+  .member-avatar-lg {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--red-dark);
+    border: 2px solid var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+
+  .member-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .member-meta {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .member-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(0,200,80,0.3); }
+  .badge-red { background: rgba(200,16,46,0.15); color: var(--red-light); border: 1px solid rgba(200,16,46,0.3); }
+  .badge-gray { background: rgba(255,255,255,0.05); color: var(--gray-light); border: 1px solid rgba(255,255,255,0.1); }
+  .badge-yellow { background: rgba(251,191,36,0.1); color: #FBBF24; border: 1px solid rgba(251,191,36,0.3); }
+
+  /* SECTION CARD */
+  .section-card {
+    background: var(--black-3);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .section-card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-card-sub {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 24px;
+  }
+
+  /* BENEFITS TABLE */
+  .benefits-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .benefits-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .benefits-table td {
+    padding: 12px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--gray-light);
+    vertical-align: middle;
+  }
+
+  .benefits-table tr:last-child td { border-bottom: none; }
+  .benefits-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .benefit-name { color: var(--white); font-weight: 500; }
+
+  .progress-bar-wrap {
+    background: var(--black-5);
+    border-radius: 2px;
+    height: 6px;
+    width: 120px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    transition: width 0.4s;
+  }
+
+  .progress-bar-fill.full { background: var(--gray); }
+
+  .remaining-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .remaining-badge.available { background: rgba(200,16,46,0.15); color: var(--red-light); }
+  .remaining-badge.used-up { background: rgba(255,255,255,0.05); color: var(--gray); }
+
+  /* HISTORY TABLE */
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .history-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .history-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--gray-light);
+    vertical-align: middle;
+  }
+
+  .history-table tr:last-child td { border-bottom: none; }
+  .covered-yes { color: var(--green); font-weight: 600; font-size: 12px; }
+
+  /* BOOKING */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .appointments-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+
+  .appointment-item {
+    background: var(--black-4);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .appointment-service { font-weight: 600; font-size: 14px; }
+  .appointment-time { font-size: 13px; color: var(--gray); }
+
+  /* ASSISTANCE */
+  .assistance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .assistance-card {
+    background: var(--black-4);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .assistance-card:hover { border-color: rgba(200,16,46,0.3); }
+  .assistance-icon { font-size: 32px; margin-bottom: 12px; }
+  .assistance-title { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+  .assistance-desc { font-size: 13px; color: var(--gray); margin-bottom: 20px; line-height: 1.5; }
+
+  /* ADMIN */
+  .admin-note {
+    background: rgba(200,16,46,0.08);
+    border: 1px solid rgba(200,16,46,0.2);
+    border-radius: 4px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--gray-light);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin: 24px 0;
+  }
+
+  /* LABOUR DISCOUNT BANNER */
+  .discount-banner {
+    background: rgba(200,16,46,0.08);
+    border: 1px solid rgba(200,16,46,0.2);
+    border-radius: 4px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .discount-pct {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .discount-text { font-size: 14px; color: var(--gray-light); }
+  .discount-text strong { color: var(--white); display: block; font-size: 15px; margin-bottom: 2px; }
+
+  /* RENEWAL */
+  .renewal-bar {
+    background: var(--black-4);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .renewal-label { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+  .renewal-date { font-size: 15px; font-weight: 600; color: var(--white); }
+
+
+  /* TOAST NOTIFICATIONS */
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--black-3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    min-width: 300px;
+    max-width: 380px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: slideIn 0.3s ease;
+    pointer-events: all;
+    border-left: 4px solid var(--green);
+  }
+  .toast.error { border-left-color: var(--red); }
+  .toast.warning { border-left-color: #FBBF24; }
+  .toast-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .toast-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .toast-message { font-size: 13px; color: var(--gray-light); line-height: 1.5; }
+  .toast-close { margin-left: auto; background: none; border: none; color: var(--gray); cursor: pointer; font-size: 16px; padding: 0; flex-shrink: 0; }
+  .toast-close:hover { color: var(--white); }
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
+  }
+  .toast.removing { animation: slideOut 0.3s ease forwards; }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .member-card { flex-direction: column; }
+    .portal-nav { padding: 0 16px; }
+    .tabs-bar { padding: 0 16px; }
+    .tab-content { padding: 20px 16px; }
+    .section-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-bg"></div>
+  <div class="login-grid"></div>
+  <div class="login-box">
+    <div class="login-logo">Auto Repair <span>Xperts</span></div>
+    <div class="login-sub">Member Portal</div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="your@email.com" />
+    </div>
+    <div class="form-group">
+      <label>Membership ID</label>
+      <input type="text" id="loginId" placeholder="e.g. AUTO-PREM-1042" />
+    </div>
+    <button class="btn-primary" onclick="handleLogin()" style="margin-top:8px;">Access My Portal</button>
+    <p style="font-size:12px;color:var(--gray);text-align:center;margin-top:16px;">Don't have a membership? <a href="index.html" style="color:var(--red);text-decoration:none;">View Plans →</a></p>
+    <a href="index.html" class="login-back">← Back to Website</a>
+    <a href="terms.html" class="login-legal" target="_blank">Terms & Conditions</a>
+
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
+      <p style="font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;text-align:center;">Staff Access</p>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" />
+      </div>
+      <button class="btn-outline-red" onclick="adminLogin()" style="width:100%;">Admin Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- PORTAL -->
+<div class="portal" id="portalScreen">
+
+  <!-- NAV -->
+  <div class="portal-nav">
+    <div class="portal-logo">Auto Repair <span>Xperts</span></div>
+    <div class="portal-user">
+      <div class="portal-avatar" id="navAvatar">BA</div>
+      <span class="portal-username" id="navName">Blessing A.</span>
+      <button class="btn-secondary" onclick="handleLogout()" style="padding:8px 16px;font-size:12px;">Logout</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+    <button class="tab-btn member-only" onclick="showTab('benefits', this)">Benefits</button>
+    <button class="tab-btn member-only" onclick="showTab('booking', this)">Book Appointment</button>
+    <button class="tab-btn member-only" onclick="showTab('history', this)">Service History</button>
+    <button class="tab-btn member-only" onclick="showTab('assistance', this)">Roadside Help</button>
+    <button class="tab-btn admin-tab" onclick="showTab('admin', this)" style="display:none;">Admin Panel</button>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-content active" id="tab-overview">
+
+    <div class="member-card">
+      <div class="member-info">
+        <div class="member-avatar-lg" id="memberAvatarLg">BA</div>
+        <div>
+          <div class="member-name" id="memberName">Blessing Agunloye</div>
+          <div class="member-meta" id="memberMeta">ID: AUTO-PREM-1042 &nbsp;·&nbsp; 2021 Toyota Camry &nbsp;·&nbsp; ONT-4821</div>
+        </div>
+      </div>
+      <div class="member-badges">
+        <span class="badge badge-green" id="statusBadge">● Active</span>
+        <span class="badge badge-red" id="planBadge">Premium Plan</span>
+      </div>
+    </div>
+
+    <div class="renewal-bar">
+      <div>
+        <div class="renewal-label">Membership Renewal Date</div>
+        <div class="renewal-date" id="renewalDate">December 30, 2026</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-outline-red" onclick="window.open(QUICKBOOKS_PREMIUM)">Renew / Upgrade</button>
+        <button class="btn-secondary" style="padding:8px 16px;font-size:12px;" onclick="window.location.href='index.html'">← Main Site</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💳</div>
+        <div class="stat-label">Annual Plan Price</div>
+        <div class="stat-value red" id="statPrice">$1,500</div>
+        <div class="stat-detail">+ GST per year</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-label">Benefits Remaining</div>
+        <div class="stat-value" id="statRemaining">—</div>
+        <div class="stat-detail">Across all services</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Value Received</div>
+        <div class="stat-value red" id="statValue">—</div>
+        <div class="stat-detail" id="statDiscount">Incl. labour savings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🛡️</div>
+        <div class="stat-label">Labour Discount</div>
+        <div class="stat-value red" id="statDiscount2">10%</div>
+        <div class="stat-detail">Off all labour costs</div>
+      </div>
+    </div>
+
+    <div class="discount-banner">
+      <div class="discount-pct" id="discountPct">10%</div>
+      <div class="discount-text">
+        <strong>Labour Discount Active</strong>
+        Your plan includes a discount off all labour costs on every visit. Just mention your membership at the desk.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">📅 Upcoming Appointments</div>
+      <div class="section-card-sub">Your next scheduled visits</div>
+      <div id="overviewAppointments"></div>
+    </div>
+
+  </div>
+
+  <!-- BENEFITS TAB -->
+  <div class="tab-content" id="tab-benefits">
+    <div class="section-card">
+      <div class="section-card-title">⚡ Your Plan Benefits</div>
+      <div class="section-card-sub">Real-time view of included, used and remaining services for your plan year.</div>
+      <div style="overflow-x:auto;">
+        <table class="benefits-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Included</th>
+              <th>Used</th>
+              <th>Remaining</th>
+              <th>Progress</th>
+            </tr>
+          </thead>
+          <tbody id="benefitsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING TAB -->
+  <div class="tab-content" id="tab-booking">
+    <div class="section-card">
+      <div class="section-card-title">📅 Book an Appointment</div>
+      <div class="section-card-sub">Schedule your next visit. We'll confirm within 1 hour.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Service</label>
+          <select id="bookService">
+            <option>Oil Change</option>
+            <option>Tire Rotation</option>
+            <option>Brake Inspection</option>
+            <option>Dashboard Diagnostics</option>
+            <option>Battery Service</option>
+            <option>General Inspection</option>
+            <option>Detailing — Exterior</option>
+            <option>Detailing — Interior</option>
+            <option>Tire Swap</option>
+            <option>Belt Replacement</option>
+            <option>Anti-Rust Coating</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" id="bookDate" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preferred Time</label>
+          <input type="time" id="bookTime" value="09:00" />
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <input type="text" id="bookNotes" placeholder="Any specific concerns?" />
+        </div>
+      </div>
+      <label class="terms-agree">
+        <input type="checkbox" id="bookTermsCheckbox" onchange="updateBookButtonState()" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+      </label>
+      <button class="btn-primary btn-disabled" id="bookSubmitBtn" style="max-width:220px;" onclick="bookAppointment()">Confirm Booking</button>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">🗓️ Your Appointments</div>
+      <div class="section-card-sub">Upcoming and recent bookings</div>
+      <div class="appointments-list" id="appointmentsList"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="tab-content" id="tab-history">
+    <div class="section-card">
+      <div class="section-card-title">🔧 Service History</div>
+      <div class="section-card-sub">Complete record of all services performed on your vehicle.</div>
+      <div style="overflow-x:auto;">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Service</th>
+              <th>Technician</th>
+              <th>Retail Value</th>
+              <th>Covered</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSISTANCE TAB -->
+  <div class="tab-content" id="tab-assistance">
+    <div class="section-card">
+      <div class="section-card-title">🚨 Roadside & Mobile Assistance</div>
+      <div class="section-card-sub">Premium services available within 100km of Calgary.</div>
+      <div class="assistance-grid">
+        <div class="assistance-card">
+          <div class="assistance-icon">🔋</div>
+          <div class="assistance-title">Battery Boost</div>
+          <div class="assistance-desc">Dead battery? We'll come to you and get you running again.</div>
+          <button class="btn-outline-red" onclick="requestAssistance('Battery Boost')">Request Now</button>
+        </div>
+        <div class="assistance-card">
+          <div class="assistance-icon">🛞</div>
+          <div class="assistance-title">Mobile Tire Help</div>
+          <div class="assistance-desc">Flat tire anywhere within 100km. We bring the fix to you.</div>
+          <button class="btn-outline-red" onclick="requestAssistance('Mobile Tire Help')">Request Now</button>
+        </div>
+        <div class="assistance-card">
+          <div class="assistance-icon">🚗</div>
+          <div class="assistance-title">Emergency Roadside</div>
+          <div class="assistance-desc">Full emergency assistance. Available 24 hours a day.</div>
+          <a href="tel:5874354463" class="btn-primary" style="display:block;text-align:center;text-decoration:none;padding:14px 32px;">📞 Call Now — (587) 435-4463</a>
+        </div>
+        <div class="assistance-card">
+          <div class="assistance-icon">🚛</div>
+          <div class="assistance-title">Towing Service</div>
+          <div class="assistance-desc">Towing within 100km. Available with Standard and Premium plans.</div>
+          <button class="btn-outline-red" onclick="requestAssistance('Towing')">Request Tow</button>
+        </div>
+        <div class="assistance-card">
+          <div class="assistance-icon">🚌</div>
+          <div class="assistance-title">Shuttle Service</div>
+          <div class="assistance-desc">Premium plan includes shuttle while your vehicle is being serviced.</div>
+          <button class="btn-outline-red" onclick="requestAssistance('Shuttle')">Request Shuttle</button>
+        </div>
+        <div class="assistance-card">
+          <div class="assistance-icon">📦</div>
+          <div class="assistance-title">Pick-Up & Drop-Off</div>
+          <div class="assistance-desc">We pick up your vehicle and return it when done. Premium only.</div>
+          <button class="btn-outline-red" onclick="requestAssistance('Pick-Up & Drop-Off')">Request Pick-Up</button>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--gray);margin-top:20px;">All mobile assistance is subject to availability and within 100km of Calgary. Emergency services are available 24/7.</p>
+    </div>
+  </div>
+
+  <!-- ADMIN TAB -->
+  <div class="tab-content" id="tab-admin">
+    <div class="admin-note">
+      🔐 <strong>Admin Panel</strong> — For Auto Repair Xperts staff only. Search a member to manage their account, mark services, confirm appointments and add new members.
+    </div>
+
+    <!-- MEMBER SEARCH -->
+    <div class="section-card">
+      <div class="section-card-title">🔍 Search Member</div>
+      <div class="section-card-sub">Search by name or email to load a specific member's account before making any changes.</div>
+      <div class="form-group" style="max-width:400px;position:relative;">
+        <label>Member Name or Email</label>
+        <input type="text" id="memberSearch" placeholder="Start typing a name or email..." autocomplete="off" oninput="searchMembers()" />
+        <div id="memberSuggestions" style="position:absolute;top:100%;left:0;right:0;background:var(--black-4);border:1px solid rgba(37,99,235,0.3);border-radius:0 0 8px 8px;z-index:50;display:none;max-height:200px;overflow-y:auto;"></div>
+      </div>
+      <div id="selectedMemberBadge" style="display:none;margin-top:12px;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:12px 16px;font-size:13px;">
+        <span style="color:var(--gray);">Currently managing:</span> <strong id="selectedMemberName" style="color:#60A5FA;"></strong> — <span id="selectedMemberIdDisplay" style="color:var(--gray-light);"></span>
+      </div>
+    </div>
+
+    <!-- MANAGE APPOINTMENTS -->
+    <div class="section-card">
+      <div class="section-card-title">📅 Manage Appointments</div>
+      <div class="section-card-sub">View all pending appointments and confirm or cancel them.</div>
+      <button class="btn-secondary" style="max-width:200px;margin-bottom:20px;" onclick="loadAllAppointments()">Load All Appointments</button>
+      <div id="allAppointmentsList"></div>
+    </div>
+
+    <!-- MARK BENEFIT USED -->
+    <div class="section-card">
+      <div class="section-card-title">⚙️ Mark Benefit Used</div>
+      <div class="section-card-sub">Log a completed service for the currently loaded member.</div>
+      <div class="form-row" style="margin-bottom:16px;">
+        <div class="form-group">
+          <label>Select Benefit</label>
+          <select id="adminBenefit"></select>
+        </div>
+        <div class="form-group">
+          <label>Retail Value (CAD)</label>
+          <input type="number" id="adminValue" placeholder="e.g. 120" value="120" />
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:20px;">
+        <div class="form-group">
+          <label>Technician Name</label>
+          <input type="text" id="adminTech" placeholder="e.g. Mike A." />
+        </div>
+        <div class="form-group">
+          <label>Service Date</label>
+          <input type="date" id="adminDate" />
+        </div>
+      </div>
+      <button class="btn-primary" style="max-width:220px;" onclick="markBenefitUsed()">Mark as Used</button>
+    </div>
+
+    <!-- CHANGE PLAN -->
+    <div class="section-card">
+      <div class="section-card-title">🔄 Change Membership Plan</div>
+      <div class="section-card-sub">Upgrade or downgrade the currently loaded member's plan.</div>
+      <div id="changePlanMemberInfo" style="font-size:13px;color:var(--gray);margin-bottom:16px;">No member loaded — search a member above first.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>New Plan</label>
+          <select id="adminPlan">
+            <option value="Basic">Basic — $600/yr</option>
+            <option value="Standard">Standard — $900/yr</option>
+            <option value="Premium" selected>Premium — $1,500/yr</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:1px;">
+          <button class="btn-primary" style="max-width:180px;" onclick="changePlan()">Update Plan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD NEW MEMBER -->
+    <div class="section-card">
+      <div class="section-card-title">➕ Add New Member</div>
+      <div class="section-card-sub">Add a new customer after they pay. Name, email and plan are required.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="newMemberName" placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="newMemberEmail" placeholder="john@email.com" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Membership Plan</label>
+          <select id="newMemberPlan">
+            <option value="Basic">Basic — $600/yr</option>
+            <option value="Standard">Standard — $900/yr</option>
+            <option value="Premium">Premium — $1,500/yr</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Renewal Date</label>
+          <input type="date" id="newMemberRenewal" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vehicle (optional)</label>
+          <input type="text" id="newMemberVehicle" placeholder="2021 Toyota Camry" />
+        </div>
+        <div class="form-group">
+          <label>Plate Number (optional)</label>
+          <input type="text" id="newMemberPlate" placeholder="ABC-1234" />
+        </div>
+      </div>
+      <button class="btn-primary" style="max-width:220px;" onclick="addNewMember()">Add Member</button>
+      <div id="newMemberResult" style="margin-top:16px;font-size:13px;"></div>
+    </div>
+
+    <!-- ALL MEMBERS -->
+    <div class="section-card">
+      <div class="section-card-title">👥 All Members</div>
+      <div class="section-card-sub">View all registered members.</div>
+      <button class="btn-secondary" style="max-width:180px;margin-bottom:20px;" onclick="loadAllMembers()">Load All Members</button>
+      <div id="allMembersList"></div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    © 2026 Auto Repair Xperts Inc.
+    <a href="terms.html" target="_blank">Terms & Conditions</a>
+    <a href="index.html">Main Site</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://dthftdrsmvnwrtxohitn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0aGZ0ZHJzbXZud3J0eG9oaXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTQ3OTksImV4cCI6MjA5NjM3MDc5OX0.yHx5GsehIEAbr80M7k5I_MYHif700TecFXBoc8QKDIs';
+let db;
+window.addEventListener('load', () => {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+});
+const PLANS = {
+  Basic: {
+    annualPrice: 600,
+    labourDiscount: 5,
+    benefits: {
+      generalInspections: { label: "General Inspections", included: 2 },
+      secondaryInspections: { label: "Secondary Inspections", included: 1 },
+      oilChanges: { label: "Synthetic Oil Changes", included: 2 },
+      brakePadReplacement: { label: "Brake Pad Replacement", included: 1 },
+      tuneUp: { label: "Tune-Up (Plugs, Air & Cabin Filter)", included: 1 },
+      tireRotations: { label: "Tire Rotations", included: 1 },
+      tireRepair: { label: "Tire Repair", included: 0 },
+      diagnostics: { label: "Dashboard Light Diagnostics", included: 1 },
+      fluidsTopUp: { label: "Fluids Top-Up", included: 2 },
+      beltReplacement: { label: "Belt Replacement", included: 0 },
+      batteryReplacement: { label: "Battery Replacement", included: 0 },
+      batteryBoosts: { label: "Battery Boost (100km)", included: 0 },
+      antiRustCoating: { label: "Anti-Rust Coating", included: 0 },
+      tireSwaps: { label: "Tire Swaps", included: 4 },
+      shuttleService: { label: "Shuttle Service", included: 0 },
+      detailingExterior: { label: "Exterior Detailing", included: 0 },
+      detailingInterior: { label: "Interior Detailing", included: 0 },
+      towing: { label: "Towing (100km)", included: 0 },
+      emergencyRoadside: { label: "Emergency Roadside (100km)", included: 0 },
+      pickUpDropOff: { label: "Pick-Up & Drop-Off", included: 0 },
+    }
+  },
+  Standard: {
+    annualPrice: 900,
+    labourDiscount: 7,
+    benefits: {
+      generalInspections: { label: "General Inspections", included: 4 },
+      secondaryInspections: { label: "Secondary Inspections", included: 3 },
+      oilChanges: { label: "Synthetic Oil Changes", included: 3 },
+      brakePadReplacement: { label: "Brake Pad Replacement", included: 1 },
+      tuneUp: { label: "Tune-Up (Plugs, Air & Cabin Filter)", included: 1 },
+      tireRotations: { label: "Tire Rotations", included: 1 },
+      tireRepair: { label: "Tire Repair", included: 2 },
+      diagnostics: { label: "Dashboard Light Diagnostics", included: 3 },
+      fluidsTopUp: { label: "Fluids Top-Up", included: 4 },
+      beltReplacement: { label: "Belt Replacement", included: 1 },
+      batteryReplacement: { label: "Battery Replacement", included: 0 },
+      batteryBoosts: { label: "Battery Boost (100km)", included: 1 },
+      antiRustCoating: { label: "Anti-Rust Coating", included: 0 },
+      tireSwaps: { label: "Tire Swaps", included: 6 },
+      shuttleService: { label: "Shuttle Service", included: 0 },
+      detailingExterior: { label: "Exterior Detailing", included: 2 },
+      detailingInterior: { label: "Interior Detailing", included: 1 },
+      towing: { label: "Towing (100km)", included: 1 },
+      emergencyRoadside: { label: "Emergency Roadside (100km)", included: 1 },
+      pickUpDropOff: { label: "Pick-Up & Drop-Off", included: 0 },
+    }
+  },
+  Premium: {
+    annualPrice: 1500,
+    labourDiscount: 10,
+    benefits: {
+      generalInspections: { label: "General Inspections", included: 10 },
+      secondaryInspections: { label: "Secondary Inspections", included: 10 },
+      oilChanges: { label: "Synthetic Oil Changes", included: 5 },
+      brakePadReplacement: { label: "Brake Pad Replacement", included: 2 },
+      tuneUp: { label: "Tune-Up (Plugs, Air & Cabin Filter)", included: 2 },
+      tireRotations: { label: "Tire Rotations", included: 2 },
+      tireRepair: { label: "Tire Repair + Mobile", included: 5 },
+      diagnostics: { label: "Dashboard Light Diagnostics", included: 10 },
+      fluidsTopUp: { label: "Fluids Top-Up", included: 7 },
+      beltReplacement: { label: "Belt Replacement", included: 1 },
+      batteryReplacement: { label: "Battery Replacement", included: 1 },
+      batteryBoosts: { label: "Battery Boost (100km)", included: 2 },
+      antiRustCoating: { label: "Anti-Rust Coating", included: 1 },
+      tireSwaps: { label: "Tire Swaps", included: 8 },
+      shuttleService: { label: "Shuttle Service", included: 1 },
+      detailingExterior: { label: "Exterior Detailing", included: 5 },
+      detailingInterior: { label: "Interior Detailing", included: 2 },
+      towing: { label: "Towing (100km)", included: 3 },
+      emergencyRoadside: { label: "Emergency Roadside (100km)", included: 3 },
+      pickUpDropOff: { label: "Pick-Up & Drop-Off", included: 1 },
+    }
+  }
+};
+
+const DEMO = {
+  customerName: "Blessing Agunloye",
+  membershipId: "AUTO-PREM-1042",
+  plan: "Premium",
+  status: "Active",
+  renewalDate: "2026-12-30",
+  vehicle: "2021 Toyota Camry",
+  plate: "ONT-4821",
+  isAdmin: false,
+  used: {
+    generalInspections: 1,
+    secondaryInspections: 0,
+    oilChanges: 1,
+    brakePadReplacement: 0,
+    tuneUp: 0,
+    tireRotations: 1,
+    tireRepair: 0,
+    diagnostics: 0,
+    fluidsTopUp: 1,
+    beltReplacement: 0,
+    batteryReplacement: 0,
+    batteryBoosts: 0,
+    antiRustCoating: 0,
+    tireSwaps: 0,
+    shuttleService: 0,
+    detailingExterior: 0,
+    detailingInterior: 0,
+    towing: 0,
+    emergencyRoadside: 0,
+    pickUpDropOff: 0,
+  },
+  serviceHistory: [
+    { date: "2026-01-15", service: "Synthetic Oil Change", technician: "Mike A.", value: 120, covered: true },
+    { date: "2026-02-10", service: "Tire Rotation", technician: "David K.", value: 60, covered: true },
+    { date: "2026-03-22", service: "General Inspection", technician: "Sarah T.", value: 90, covered: true },
+    { date: "2026-04-05", service: "Fluids Top-Up", technician: "Mike A.", value: 40, covered: true },
+  ],
+  appointments: [
+    { date: "2026-06-15", time: "10:30", service: "Oil Change", status: "Confirmed" },
+  ]
+};
+
+let state = null;
+
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const id = document.getElementById('loginId').value.trim().toUpperCase();
+  if (!email || !id) { alert('Please enter your email and membership ID.'); return; }
+
+  try {
+    // Query member from Supabase
+    const { data: member, error } = await db
+      .from('members')
+      .select('*')
+      .eq('email', email)
+      .eq('membership_id', id)
+      .single();
+
+    if (error || !member) {
+      alert('Membership not found. Please check your email and membership ID.');
+      return;
+    }
+
+    // Get benefits used
+    const { data: benefitsData } = await db
+      .from('benefits_used')
+      .select('*')
+      .eq('membership_id', id);
+
+    // Get service history
+    const { data: historyData } = await db
+      .from('service_history')
+      .select('*')
+      .eq('membership_id', id)
+      .order('service_date', { ascending: false });
+
+    // Get appointments
+    const { data: appointmentsData } = await db
+      .from('appointments')
+      .select('*')
+      .eq('membership_id', id)
+      .order('appointment_date', { ascending: false });
+
+    // Build used object from benefits_used table
+    const used = {};
+    if (benefitsData) {
+      benefitsData.forEach(b => { used[b.benefit_key] = b.times_used; });
+    }
+
+    // Build service history array
+    const serviceHistory = (historyData || []).map(h => ({
+      date: h.service_date,
+      service: h.service,
+      technician: h.technician || 'Staff',
+      value: parseFloat(h.value) || 0,
+      covered: h.covered
+    }));
+
+    // Build appointments array
+    const appointments = (appointmentsData || []).map(a => ({
+      date: a.appointment_date,
+      time: a.appointment_time,
+      service: a.service,
+      status: a.status
+    }));
+
+    state = {
+      customerName: member.customer_name,
+      membershipId: member.membership_id,
+      plan: member.plan,
+      status: member.status,
+      renewalDate: member.renewal_date,
+      vehicle: member.vehicle || 'N/A',
+      plate: member.plate || 'N/A',
+      isAdmin: false,
+      used,
+      serviceHistory,
+      appointments
+    };
+
+    loadPortal();
+
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    console.error(err);
+  }
+}
+
+function demoLogin() {
+  state = JSON.parse(JSON.stringify(DEMO));
+  state.isAdmin = true;
+  loadPortal();
+}
+
+function adminLogin() {
+  const password = document.getElementById("adminPassword").value;
+  const ADMIN_PASSWORD = "ARPX-ADMIN-2026";
+  if (password === ADMIN_PASSWORD) {
+    state = JSON.parse(JSON.stringify(DEMO));
+    state.isAdmin = true;
+    state.customerName = "Admin";
+    state.membershipId = "ADMIN";
+    loadPortal();
+  } else {
+    alert("Incorrect admin password. Contact support.");
+  }
+}
+
+function handleLogout() {
+  state = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('portalScreen').style.display = 'none';
+}
+
+function loadPortal() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('portalScreen').style.display = 'block';
+
+  const isAdmin = state.isAdmin && state.membershipId === 'ADMIN';
+
+  // Make admin nav visually different — red background
+  const portalNav = document.querySelector('.portal-nav');
+  if (isAdmin) {
+    portalNav.style.background = 'rgba(139,0,0,0.98)';
+    portalNav.style.borderBottom = '1px solid rgba(255,255,255,0.2)';
+    document.querySelector('.portal-logo').innerHTML = 'Auto Repair <span style="color:#fff">Xperts</span> <span style="font-size:13px;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:2px;letter-spacing:1px;margin-left:8px;">ADMIN</span>';
+  } else {
+    portalNav.style.background = '';
+    portalNav.style.borderBottom = '';
+  }
+
+  const initials = isAdmin ? 'AD' : state.customerName.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('navAvatar').textContent = initials;
+  document.getElementById('navAvatar').style.background = isAdmin ? '#fff' : '';
+  document.getElementById('navAvatar').style.color = isAdmin ? 'var(--red-dark)' : '';
+
+  if (!isAdmin) {
+    document.getElementById('memberAvatarLg').textContent = initials;
+    document.getElementById('navName').textContent = state.customerName.split(' ')[0] + ' ' + state.customerName.split(' ')[1][0] + '.';
+    document.getElementById('memberName').textContent = state.customerName;
+    document.getElementById('memberMeta').textContent = `ID: ${state.membershipId} · ${state.vehicle} · ${state.plate}`;
+  } else {
+    document.getElementById('memberAvatarLg').textContent = 'AD';
+    document.getElementById('navName').textContent = 'Admin';
+    document.getElementById('memberName').textContent = 'Admin Dashboard';
+    document.getElementById('memberMeta').textContent = 'Staff access — Auto Repair Xperts';
+  }
+
+  document.getElementById('planBadge').textContent = isAdmin ? 'Staff Access' : state.plan + ' Plan';
+  document.getElementById('renewalDate').textContent = isAdmin ? 'N/A' : new Date(state.renewalDate).toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
+
+  if (state.isAdmin) {
+    document.querySelector('.admin-tab').style.display = 'inline-block';
+    document.querySelectorAll('.member-only').forEach(tab => {
+      tab.style.display = isAdmin ? 'none' : 'inline-block';
+    });
+  }
+
+  if (isAdmin) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-admin').classList.add('active');
+    document.querySelector('.admin-tab').classList.add('active');
+  }
+
+  const plan = PLANS[state.plan];
+  document.getElementById('statPrice').textContent = '$' + plan.annualPrice.toLocaleString();
+  document.getElementById('discountPct').textContent = plan.labourDiscount + '%';
+  document.getElementById('statDiscount2').textContent = plan.labourDiscount + '%';
+  document.getElementById('statDiscount').textContent = plan.labourDiscount + '% off all labour';
+
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('adminDate').value = today;
+
+  // Set default renewal date to one year from today
+  const nextYear = new Date();
+  nextYear.setFullYear(nextYear.getFullYear() + 1);
+  document.getElementById('newMemberRenewal').value = nextYear.toISOString().slice(0,10);
+
+  renderAll();
+}
+
+function renderAll() {
+  renderStats();
+  renderBenefits();
+  renderHistory();
+  renderAppointments();
+  renderAdminBenefits();
+  const bookTerms = document.getElementById('bookTermsCheckbox');
+  if (bookTerms) { bookTerms.checked = false; }
+  updateBookButtonState();
+}
+
+function updateBookButtonState() {
+  const checkbox = document.getElementById('bookTermsCheckbox');
+  const btn = document.getElementById('bookSubmitBtn');
+  if (!checkbox || !btn) return;
+  if (checkbox.checked) {
+    btn.classList.remove('btn-disabled');
+  } else {
+    btn.classList.add('btn-disabled');
+  }
+}
+
+function getTotalRemaining() {
+  const plan = PLANS[state.plan];
+  let total = 0;
+  for (const key in plan.benefits) {
+    total += Math.max((plan.benefits[key].included || 0) - (state.used[key] || 0), 0);
+  }
+  return total;
+}
+
+function getTotalValue() {
+  return state.serviceHistory.reduce((s, i) => s + i.value, 0);
+}
+
+function renderStats() {
+  document.getElementById('statRemaining').textContent = getTotalRemaining();
+  const val = getTotalValue();
+  const plan = PLANS[state.plan];
+  const discount = Math.round(val * plan.labourDiscount / 100);
+  document.getElementById('statValue').textContent = '$' + (val + discount).toLocaleString();
+}
+
+function renderBenefits() {
+  const plan = PLANS[state.plan];
+  const tbody = document.getElementById('benefitsTableBody');
+  tbody.innerHTML = '';
+  for (const key in plan.benefits) {
+    const b = plan.benefits[key];
+    const used = state.used[key] || 0;
+    const remaining = Math.max(b.included - used, 0);
+    const pct = b.included > 0 ? Math.round((used / b.included) * 100) : 100;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="benefit-name">${b.label}</td>
+      <td>${b.included}</td>
+      <td>${used}</td>
+      <td><span class="remaining-badge ${remaining > 0 ? 'available' : 'used-up'}">${remaining}</span></td>
+      <td>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill ${remaining === 0 ? 'full' : ''}" style="width:${b.included > 0 ? pct : 100}%"></div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  }
+}
+
+function renderHistory() {
+  const tbody = document.getElementById('historyTableBody');
+  tbody.innerHTML = '';
+  if (state.serviceHistory.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);padding:20px 12px;">No service history yet.</td></tr>';
+    return;
+  }
+  state.serviceHistory.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.date}</td>
+      <td style="color:var(--white);font-weight:500;">${item.service}</td>
+      <td>${item.technician}</td>
+      <td>$${item.value.toFixed(2)}</td>
+      <td class="covered-yes">${item.covered ? '✓ Covered' : 'Not Covered'}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function renderAppointments() {
+  const list = document.getElementById('appointmentsList');
+  const overview = document.getElementById('overviewAppointments');
+  list.innerHTML = '';
+  if (overview) overview.innerHTML = '';
+  if (state.appointments.length === 0) {
+    list.innerHTML = '<p style="color:var(--gray);font-size:14px;">No appointments booked yet.</p>';
+    if (overview) overview.innerHTML = '<p style="color:var(--gray);font-size:14px;">No upcoming appointments.</p>';
+    return;
+  }
+  state.appointments.forEach((apt, index) => {
+    const isCancelled = apt.status === 'Cancelled';
+    const el = document.createElement('div');
+    el.className = 'appointment-item';
+    el.style.opacity = isCancelled ? '0.5' : '1';
+    el.innerHTML = `
+      <div>
+        <div class="appointment-service">${apt.service}</div>
+        <div class="appointment-time">${apt.date} at ${apt.time}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge ${isCancelled ? 'badge-gray' : apt.status === 'Confirmed' ? 'badge-green' : 'badge-yellow'}">● ${apt.status}</span>
+        ${!isCancelled ? `<button onclick="cancelAppointment(${index})" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);">Cancel</button>` : ''}
+      </div>
+    `;
+    list.appendChild(el);
+    if (overview && !isCancelled) overview.appendChild(el.cloneNode(true));
+  });
+}
+
+async function cancelAppointment(index) {
+  const apt = state.appointments[index];
+  if (!apt) return;
+
+  const confirmed = confirm(`Cancel your ${apt.service} on ${apt.date} at ${apt.time}?`);
+  if (!confirmed) return;
+
+  try {
+    if (db && state.membershipId !== 'ADMIN') {
+      await db.from('appointments')
+        .update({ status: 'Cancelled' })
+        .eq('membership_id', state.membershipId)
+        .eq('appointment_date', apt.date)
+        .eq('appointment_time', apt.time);
+    }
+    state.appointments[index].status = 'Cancelled';
+    renderAppointments();
+    showToast('warning', 'Appointment Cancelled', `Your ${apt.service} on ${apt.date} at ${apt.time} has been cancelled.`);
+  } catch (err) {
+    showToast('error', 'Error', 'Could not cancel appointment. Please call us at (587) 435-4463.');
+    console.error(err);
+  }
+}
+
+function renderAdminBenefits() {
+  const plan = PLANS[state.plan];
+  const sel = document.getElementById('adminBenefit');
+  sel.innerHTML = '';
+  for (const key in plan.benefits) {
+    const b = plan.benefits[key];
+    const remaining = Math.max(b.included - (state.used[key] || 0), 0);
+    if (b.included > 0) {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = `${b.label} (${remaining} remaining)`;
+      sel.appendChild(opt);
+    }
+  }
+}
+
+function showToast(type, title, message, duration = 5000) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type === 'error' ? 'error' : type === 'warning' ? 'warning' : ''}`;
+  const icon = type === 'success' ? '✅' : type === 'error' ? '🚫' : '⚠️';
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div>
+      <div class="toast-title">${title}</div>
+      <div class="toast-message">${message}</div>
+    </div>
+    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+async function bookAppointment() {
+  const termsCheckbox = document.getElementById('bookTermsCheckbox');
+  if (termsCheckbox && !termsCheckbox.checked) {
+    alert('Please agree to the Membership Terms & Conditions before booking.');
+    termsCheckbox.focus();
+    return;
+  }
+  const service = document.getElementById('bookService').value;
+  const date = document.getElementById('bookDate').value;
+  const time = document.getElementById('bookTime').value;
+  const notes = document.getElementById('bookNotes').value;
+  if (!date) { alert('Please select a date.'); return; }
+  if (!time) { alert('Please select a time.'); return; }
+
+  try {
+    if (db && state.membershipId !== 'ADMIN') {
+
+      // CHECK FOR DOUBLE BOOKING — query Supabase first
+      const { data: existing, error: checkError } = await db
+        .from('appointments')
+        .select('id')
+        .eq('appointment_date', date)
+        .eq('appointment_time', time)
+        .neq('status', 'Cancelled')
+        .single();
+
+      if (existing) {
+        showToast('error', 'Time Slot Unavailable', `${date} at ${time} is already booked. Please choose a different date or time.`);
+        return;
+      }
+
+      // Time slot is free — go ahead and book
+      await db.from('appointments').insert({
+        membership_id: state.membershipId,
+        service,
+        appointment_date: date,
+        appointment_time: time,
+        notes,
+        status: 'Pending'
+      });
+    }
+
+    // Notify client via Formspree
+    try {
+      await fetch('https://formspree.io/f/mqeopqln', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: 'New Appointment Booked — ' + service,
+          message: `Member: ${state.customerName} (${state.membershipId})\nService: ${service}\nDate: ${date}\nTime: ${time}\nNotes: ${notes || 'None'}`
+        })
+      });
+    } catch(e) { console.log('Notification failed silently'); }
+
+    state.appointments.unshift({ service, date, time, status: 'Pending' });
+    renderAppointments();
+    showToast('success', 'Appointment Requested!', `Your ${service} has been scheduled for ${date} at ${time}. We will confirm your appointment within 1 hour.`, 7000);
+  } catch (err) {
+    alert('Could not save appointment. Please call us directly at (587) 435-4463.');
+    console.error(err);
+  }
+}
+
+async function markBenefitUsed() {
+  const key = document.getElementById('adminBenefit').value;
+  const value = parseFloat(document.getElementById('adminValue').value) || 0;
+  const tech = document.getElementById('adminTech').value || 'Admin';
+  const date = document.getElementById('adminDate').value;
+  const plan = PLANS[state.plan];
+  const remaining = Math.max(plan.benefits[key].included - (state.used[key] || 0), 0);
+  if (remaining <= 0) { alert('No remaining uses for this benefit.'); return; }
+
+  try {
+    if (db && state.membershipId !== 'DEMO') {
+      const newCount = (state.used[key] || 0) + 1;
+      const { data: existing } = await db
+        .from('benefits_used')
+        .select('*')
+        .eq('membership_id', state.membershipId)
+        .eq('benefit_key', key)
+        .single();
+
+      if (existing) {
+        await db.from('benefits_used')
+          .update({ times_used: newCount, updated_at: new Date().toISOString() })
+          .eq('membership_id', state.membershipId)
+          .eq('benefit_key', key);
+      } else {
+        await db.from('benefits_used').insert({
+          membership_id: state.membershipId,
+          benefit_key: key,
+          times_used: newCount
+        });
+      }
+
+      await db.from('service_history').insert({
+        membership_id: state.membershipId,
+        service_date: date,
+        service: plan.benefits[key].label,
+        technician: tech,
+        value,
+        covered: true
+      });
+    }
+
+    state.used[key] = (state.used[key] || 0) + 1;
+    state.serviceHistory.unshift({
+      date,
+      service: plan.benefits[key].label,
+      technician: tech,
+      value,
+      covered: true
+    });
+    renderAll();
+
+    // Send confirmation email to customer via Formspree
+    try {
+      const newRemaining = Math.max(plan.benefits[key].included - state.used[key], 0);
+      await fetch('https://formspree.io/f/mqeopqln', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: 'Service Confirmation — ' + plan.benefits[key].label,
+          message: [
+            'Hi ' + state.customerName + ',',
+            '',
+            'This is an automatic confirmation that the following service was completed on your vehicle today:',
+            '',
+            'Service: ' + plan.benefits[key].label,
+            'Date: ' + date,
+            'Technician: ' + tech,
+            'Retail Value: $' + value.toFixed(2),
+            'Covered by Plan: Yes',
+            '',
+            'Remaining uses of this benefit: ' + newRemaining,
+            '',
+            'Membership ID: ' + state.membershipId,
+            'Plan: ' + state.plan,
+            '',
+            'If you did not receive this service or believe this is an error please contact us immediately at (587) 435-4463.',
+            '',
+            'Thank you for being an Auto Repair Xperts member.',
+            'Auto Repair Xperts Inc',
+            'autorepairxperts.com'
+          ].join('\n')
+        })
+      });
+    } catch(e) { console.log('Confirmation email failed silently'); }
+
+    alert('✓ ' + plan.benefits[key].label + ' marked as used. Confirmation email sent to customer.');
+  } catch (err) {
+    alert('Could not save. Please try again.');
+    console.error(err);
+  }
+}
+
+// MEMBER SEARCH AUTOCOMPLETE
+let allMembersCache = [];
+async function searchMembers() {
+  const query = document.getElementById('memberSearch').value.trim().toLowerCase();
+  const suggestions = document.getElementById('memberSuggestions');
+  if (query.length < 2) { suggestions.style.display = 'none'; return; }
+
+  try {
+    if (allMembersCache.length === 0) {
+      const { data } = await db.from('members').select('customer_name, email, membership_id, plan');
+      allMembersCache = data || [];
+    }
+    const matches = allMembersCache.filter(m =>
+      m.customer_name.toLowerCase().includes(query) ||
+      m.email.toLowerCase().includes(query) ||
+      m.membership_id.toLowerCase().includes(query)
+    ).slice(0, 6);
+
+    if (matches.length === 0) { suggestions.style.display = 'none'; return; }
+
+    suggestions.innerHTML = matches.map(m => `
+      <div onclick="selectMember('${m.membership_id}', '${m.customer_name}', '${m.email}', '${m.plan}')"
+        style="padding:12px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;"
+        onmouseover="this.style.background='rgba(37,99,235,0.1)'" onmouseout="this.style.background=''">
+        <strong style="color:var(--white);">${m.customer_name}</strong>
+        <span style="color:var(--gray);margin-left:8px;">${m.email}</span>
+        <span style="color:#60A5FA;margin-left:8px;font-size:11px;">${m.membership_id}</span>
+      </div>
+    `).join('');
+    suggestions.style.display = 'block';
+  } catch(e) { suggestions.style.display = 'none'; }
+}
+
+async function selectMember(id, name, email, plan) {
+  document.getElementById('memberSearch').value = name;
+  document.getElementById('memberSuggestions').style.display = 'none';
+  document.getElementById('selectedMemberBadge').style.display = 'block';
+  document.getElementById('selectedMemberName').textContent = name;
+  document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + plan + ' Plan';
+  document.getElementById('changePlanMemberInfo').innerHTML = `Changing plan for: <strong style="color:#60A5FA;">${name}</strong> (${id})`;
+
+  // Load this member's full data
+  try {
+    const { data: member } = await db.from('members').select('*').eq('membership_id', id).single();
+    const { data: benefitsData } = await db.from('benefits_used').select('*').eq('membership_id', id);
+    const { data: historyData } = await db.from('service_history').select('*').eq('membership_id', id).order('service_date', { ascending: false });
+    const { data: appointmentsData } = await db.from('appointments').select('*').eq('membership_id', id).order('appointment_date', { ascending: false });
+
+    const used = {};
+    if (benefitsData) benefitsData.forEach(b => { used[b.benefit_key] = b.times_used; });
+
+    state = {
+      customerName: member.customer_name,
+      membershipId: member.membership_id,
+      plan: member.plan,
+      status: member.status,
+      renewalDate: member.renewal_date,
+      vehicle: member.vehicle || 'N/A',
+      plate: member.plate || 'N/A',
+      isAdmin: true,
+      used,
+      serviceHistory: (historyData || []).map(h => ({ date: h.service_date, service: h.service, technician: h.technician || 'Staff', value: parseFloat(h.value) || 0, covered: h.covered })),
+      appointments: (appointmentsData || []).map(a => ({ date: a.appointment_date, time: a.appointment_time, service: a.service, status: a.status }))
+    };
+
+    renderAdminBenefits();
+    showToast('success', 'Member Loaded', `Now managing ${name}'s account.`);
+  } catch(e) {
+    showToast('error', 'Error', 'Could not load member data.');
+  }
+}
+
+// LOAD ALL APPOINTMENTS
+async function loadAllAppointments() {
+  const container = document.getElementById('allAppointmentsList');
+  container.innerHTML = '<p style="color:var(--gray);font-size:13px;">Loading appointments...</p>';
+
+  try {
+    const { data: apts, error } = await db
+      .from('appointments')
+      .select('*, members(customer_name, email)')
+      .order('appointment_date', { ascending: true });
+
+    if (error || !apts || apts.length === 0) {
+      container.innerHTML = '<p style="color:var(--gray);font-size:13px;">No appointments found.</p>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${apts.map(a => {
+          const isPending = a.status === 'Pending';
+          const isCancelled = a.status === 'Cancelled';
+          const memberName = a.members ? a.members.customer_name : a.membership_id;
+          const memberEmail = a.members ? a.members.email : '';
+          return `
+            <div style="background:var(--black-4);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;${isCancelled ? 'opacity:0.5;' : ''}">
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--white);">${a.service}</div>
+                <div style="font-size:12px;color:var(--gray-light);margin-top:2px;">${a.appointment_date} at ${a.appointment_time}</div>
+                <div style="font-size:12px;color:#60A5FA;margin-top:2px;">${memberName} ${memberEmail ? '· ' + memberEmail : ''}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;${isPending ? 'background:rgba(251,191,36,0.1);color:#FBBF24;border:1px solid rgba(251,191,36,0.3);' : isCancelled ? 'background:rgba(255,255,255,0.05);color:var(--gray);border:1px solid rgba(255,255,255,0.1);' : 'background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);'}">● ${a.status}</span>
+                ${isPending ? `<button onclick="updateAppointmentStatus('${a.id}', 'Confirmed', this)" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);">Confirm</button>` : ''}
+                ${!isCancelled ? `<button onclick="updateAppointmentStatus('${a.id}', 'Cancelled', this)" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);">Cancel</button>` : ''}
+                <button onclick="deleteAppointmentPermanently('${a.id}')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:var(--gray-light);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);">🗑 Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } catch(err) {
+    container.innerHTML = '<p style="color:var(--red);font-size:13px;">Error loading appointments.</p>';
+    console.error(err);
+  }
+}
+
+async function updateAppointmentStatus(id, newStatus, btn) {
+  try {
+    await db.from('appointments').update({ status: newStatus }).eq('id', id);
+    showToast('success', `Appointment ${newStatus}`, `Status updated to ${newStatus} successfully.`);
+    loadAllAppointments();
+  } catch(err) {
+    showToast('error', 'Error', 'Could not update appointment status.');
+  }
+}
+
+async function deleteAppointmentPermanently(id) {
+  const confirmed = confirm('Permanently delete this appointment? This cannot be undone.');
+  if (!confirmed) return;
+  try {
+    const { error } = await db.from('appointments').delete().eq('id', id);
+    if (error) throw error;
+    showToast('success', 'Appointment Deleted', 'The appointment has been permanently removed.');
+    loadAllAppointments();
+  } catch(err) {
+    showToast('error', 'Error', 'Could not delete appointment. Please try again.');
+    console.error(err);
+  }
+}
+
+function changePlan() {
+  const newPlan = document.getElementById('adminPlan').value;
+  state.plan = newPlan;
+  const plan = PLANS[newPlan];
+  for (const key in state.used) {
+    if (plan.benefits[key]) {
+      state.used[key] = Math.min(state.used[key] || 0, plan.benefits[key].included);
+    } else {
+      state.used[key] = 0;
+    }
+  }
+  document.getElementById('planBadge').textContent = newPlan + ' Plan';
+  document.getElementById('statPrice').textContent = '$' + plan.annualPrice.toLocaleString();
+  document.getElementById('discountPct').textContent = plan.labourDiscount + '%';
+  document.getElementById('statDiscount2').textContent = plan.labourDiscount + '%';
+  renderAll();
+  showToast('success', 'Plan Updated', `Membership plan changed to ${newPlan}.`);
+}
+
+async function addNewMember() {
+  const name = document.getElementById('newMemberName').value.trim();
+  const email = document.getElementById('newMemberEmail').value.trim().toLowerCase();
+  const plan = document.getElementById('newMemberPlan').value;
+  const renewal = document.getElementById('newMemberRenewal').value;
+  const vehicle = document.getElementById('newMemberVehicle').value.trim() || 'Not provided';
+  const plate = document.getElementById('newMemberPlate').value.trim() || 'Not provided';
+  const resultEl = document.getElementById('newMemberResult');
+
+  if (!name || !email || !renewal) {
+    showToast('error', 'Missing Fields', 'Please fill in name, email and renewal date.');
+    return;
+  }
+
+  // Generate unique membership ID
+  const prefix = plan === 'Premium' ? 'AUTO-PREM' : plan === 'Standard' ? 'AUTO-STD' : 'AUTO-BASIC';
+  const num = Math.floor(1000 + Math.random() * 9000);
+  const membershipId = `${prefix}-${num}`;
+
+  try {
+    const { error } = await db.from('members').insert({
+      email,
+      membership_id: membershipId,
+      customer_name: name,
+      plan,
+      status: 'Active',
+      renewal_date: renewal,
+      vehicle,
+      plate
+    });
+
+    if (error) {
+      if (error.message.includes('duplicate') || error.message.includes('unique')) {
+        showToast('error', 'Email Already Exists', 'A member with this email already exists.');
+      } else {
+        showToast('error', 'Error', error.message);
+      }
+      return;
+    }
+
+    // Show membership ID prominently
+    resultEl.innerHTML = `
+      <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:16px 20px;">
+        <div style="font-size:13px;color:#10B981;font-weight:700;margin-bottom:8px;">✅ Member Added Successfully</div>
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Name:</strong> ${name}</div>
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Email:</strong> ${email}</div>
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Plan:</strong> ${plan}</div>
+        <div style="font-size:15px;margin-top:12px;padding:10px 16px;background:var(--black-4);border-radius:6px;border:1px solid rgba(37,99,235,0.3);">
+          <span style="color:var(--gray);font-size:11px;letter-spacing:1px;text-transform:uppercase;">Membership ID</span><br>
+          <strong style="color:#60A5FA;font-size:18px;letter-spacing:1px;">${membershipId}</strong>
+        </div>
+        <div style="font-size:12px;color:var(--gray);margin-top:10px;">📧 Send this ID to ${email} along with the portal link: autorepairxperts.com/portal</div>
+      </div>
+    `;
+
+    // Clear form
+    document.getElementById('newMemberName').value = '';
+    document.getElementById('newMemberEmail').value = '';
+    document.getElementById('newMemberVehicle').value = '';
+    document.getElementById('newMemberPlate').value = '';
+
+    showToast('success', 'Member Added!', `${name} has been added with ID ${membershipId}`);
+
+  } catch (err) {
+    showToast('error', 'Error', 'Could not add member. Please try again.');
+    console.error(err);
+  }
+}
+
+let lastLoadedMembers = [];
+
+async function loadAllMembers() {
+  const container = document.getElementById('allMembersList');
+  container.innerHTML = '<p style="color:var(--gray);font-size:13px;">Loading members...</p>';
+
+  try {
+    const { data: members, error } = await db
+      .from('members')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !members || members.length === 0) {
+      container.innerHTML = '<p style="color:var(--gray);font-size:13px;">No members found.</p>';
+      return;
+    }
+
+    lastLoadedMembers = members;
+
+    container.innerHTML = `
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Name</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Email</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">ID</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Plan</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Renewal</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Status</th>
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${members.map(m => `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                <td style="padding:12px;color:var(--white);font-weight:500;">${m.customer_name}</td>
+                <td style="padding:12px;color:var(--gray-light);">${m.email}</td>
+                <td style="padding:12px;color:#60A5FA;font-weight:600;">${m.membership_id}</td>
+                <td style="padding:12px;">
+                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(200,16,46,0.15);color:var(--red-light);border:1px solid rgba(200,16,46,0.3);">${m.plan}</span>
+                </td>
+                <td style="padding:12px;color:var(--gray-light);">${m.renewal_date}</td>
+                <td style="padding:12px;">
+                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);">${m.status}</span>
+                </td>
+                <td style="padding:12px;">
+                  <button onclick="deleteMember('${m.membership_id}')" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">🗑 Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = '<p style="color:var(--red);font-size:13px;">Error loading members.</p>';
+    console.error(err);
+  }
+}
+
+async function deleteMember(membershipId) {
+  const member = lastLoadedMembers.find(m => m.membership_id === membershipId);
+  const name = member ? member.customer_name : membershipId;
+
+  const confirmed = confirm(`Delete member ${name} (${membershipId})? This will permanently remove their account, benefits usage, service history and appointments. This cannot be undone.`);
+  if (!confirmed) return;
+
+  try {
+    await db.from('benefits_used').delete().eq('membership_id', membershipId);
+    await db.from('service_history').delete().eq('membership_id', membershipId);
+    await db.from('appointments').delete().eq('membership_id', membershipId);
+
+    const { error } = await db.from('members').delete().eq('membership_id', membershipId);
+    if (error) throw error;
+
+    showToast('success', 'Member Deleted', `${name} has been permanently removed.`);
+    loadAllMembers();
+  } catch (err) {
+    showToast('error', 'Error', 'Could not delete member. Please try again.');
+    console.error(err);
+  }
+}
+
+async function requestAssistance(type) {
+  const subject = encodeURIComponent('🚨 ASSISTANCE REQUEST — ' + type);
+  const body = encodeURIComponent([
+    'URGENT ASSISTANCE REQUEST',
+    '',
+    'Type: ' + type,
+    'Member: ' + state.customerName,
+    'Membership ID: ' + state.membershipId,
+    'Plan: ' + state.plan,
+    'Vehicle: ' + state.vehicle,
+    'Plate: ' + state.plate,
+    '',
+    'Time: ' + new Date().toLocaleString('en-CA'),
+    '',
+    'Please contact this member immediately.'
+  ].join('\n'));
+
+  window.open(`mailto:autorepairxperts@gmail.com?subject=${subject}&body=${body}`);
+  showToast('success', 'Request Ready', `Your email app has opened with a pre-filled ${type} request. Just hit send.`, 6000);
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

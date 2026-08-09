@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terms & Conditions — Auto Repair Xperts Inc</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0000;
+    --red-light: #FF1A3C;
+    --black: #0A0A0A;
+    --black-2: #111111;
+    --black-3: #1A1A1A;
+    --black-4: #222222;
+    --gray: #888888;
+    --gray-light: #AAAAAA;
+    --white: #FFFFFF;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,16,46,0.3);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--red); }
+
+  .nav-cta {
+    background: var(--red);
+    color: var(--white) !important;
+    padding: 10px 22px;
+    border-radius: 2px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--red-light) !important; color: var(--white) !important; }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 160px 5% 60px;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 0%, rgba(200,16,46,0.12) 0%, transparent 70%);
+    border-bottom: 1px solid rgba(200,16,46,0.2);
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .page-header p {
+    font-size: 16px;
+    color: var(--gray-light);
+    max-width: 640px;
+  }
+
+  .updated-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,16,46,0.15);
+    border: 1px solid rgba(200,16,46,0.4);
+    color: var(--red-light);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 2px;
+    margin-top: 24px;
+  }
+
+  /* LAYOUT */
+  .terms-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 5% 120px;
+    align-items: start;
+  }
+
+  /* TOC */
+  .toc {
+    position: sticky;
+    top: 100px;
+    background: var(--black-3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 24px;
+  }
+
+  .toc-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-counter;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toc li {
+    counter-increment: toc-counter;
+    font-size: 13px;
+  }
+
+  .toc a {
+    color: var(--gray-light);
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+    transition: color 0.15s;
+  }
+
+  .toc a::before {
+    content: counter(toc-counter) '.';
+    color: var(--red);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .toc a:hover { color: var(--white); }
+
+  /* CONTENT */
+  .terms-intro {
+    background: var(--black-3);
+    border-left: 3px solid var(--red);
+    border-radius: 2px;
+    padding: 24px 28px;
+    font-size: 15px;
+    color: var(--gray-light);
+    margin-bottom: 48px;
+  }
+
+  .terms-section {
+    margin-bottom: 44px;
+    padding-bottom: 44px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    scroll-margin-top: 100px;
+  }
+
+  .terms-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .terms-section h2 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .terms-section h2 .num {
+    color: var(--red);
+  }
+
+  .terms-section p {
+    font-size: 15px;
+    color: var(--gray-light);
+    margin-bottom: 12px;
+  }
+
+  .terms-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0 16px;
+  }
+
+  .terms-section ul li {
+    display: flex;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--gray-light);
+    align-items: flex-start;
+  }
+
+  .terms-section ul li::before {
+    content: '—';
+    color: var(--red);
+    flex-shrink: 0;
+  }
+
+  .terms-section .rate-highlight {
+    color: var(--red-light);
+    font-weight: 600;
+  }
+
+  .acceptance-box {
+    background: var(--black-3);
+    border: 1px solid rgba(200,16,46,0.3);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-top: 20px;
+  }
+
+  .acceptance-box h3 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .acceptance-box p {
+    font-size: 14px;
+    color: var(--gray-light);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .contact-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contact-box a { color: var(--white); text-decoration: none; }
+  .contact-box a:hover { color: var(--red); }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(200,16,46,0.2);
+    padding: 48px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--red); }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .terms-wrap { grid-template-columns: 1fr; }
+    .toc { position: static; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(10,10,10,0.98); border-bottom: 1px solid rgba(200,16,46,0.3); padding: 20px 5%; gap: 16px; z-index: 99; }
+    .nav-links.open { display: flex; }
+    .nav-links li { list-style: none; }
+    .nav-links a { font-size: 15px; padding: 8px 0; display: block; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+  }
+  @media (min-width: 769px) {
+    .hamburger { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Auto Repair <span>Xperts</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#services" onclick="closeMenu()">Services</a></li>
+    <li><a href="index.html#plans" onclick="closeMenu()">Memberships</a></li>
+    <li><a href="index.html#reviews" onclick="closeMenu()">Reviews</a></li>
+    <li><a href="portal.html" onclick="closeMenu()">Member Portal</a></li>
+    <li><a href="index.html#book" class="nav-cta" onclick="closeMenu()">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<script>
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('active');
+}
+</script>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="section-label">Legal</div>
+  <h1>Membership Terms<br>& Conditions</h1>
+  <p>These Terms and Conditions govern your membership, appointments, roadside assistance and use of services provided by Auto Repair Xperts Inc. Please read them carefully before purchasing a membership or booking a service.</p>
+  <div class="updated-badge">Effective for all memberships purchased on or after this date</div>
+</div>
+
+<div class="terms-wrap">
+  <!-- TABLE OF CONTENTS -->
+  <aside class="toc" aria-label="Table of contents">
+    <div class="toc-title">On This Page</div>
+    <ol>
+      <li><a href="#s1">Membership Eligibility</a></li>
+      <li><a href="#s2">Membership Plans</a></li>
+      <li><a href="#s3">Membership Benefits</a></li>
+      <li><a href="#s4">Payment & Billing</a></li>
+      <li><a href="#s5">Automatic Renewal</a></li>
+      <li><a href="#s6">Appointment Policy</a></li>
+      <li><a href="#s7">Mobile & Roadside Assistance</a></li>
+      <li><a href="#s8">Customer Responsibilities</a></li>
+      <li><a href="#s9">Service Limitations</a></li>
+      <li><a href="#s10">Repairs & Estimates</a></li>
+      <li><a href="#s11">Warranty</a></li>
+      <li><a href="#s12">Limitation of Liability</a></li>
+      <li><a href="#s13">Release of Liability</a></li>
+      <li><a href="#s14">Vehicle Storage</a></li>
+      <li><a href="#s15">Website Use</a></li>
+      <li><a href="#s16">Privacy Policy</a></li>
+      <li><a href="#s17">Suspension or Termination</a></li>
+      <li><a href="#s18">Governing Law</a></li>
+      <li><a href="#s19">Company Privileges</a></li>
+      <li><a href="#s20">Changes to These Terms</a></li>
+      <li><a href="#s21">Contact Us</a></li>
+    </ol>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="terms-content">
+    <div class="terms-intro">
+      By creating an account, purchasing a membership, booking an appointment, requesting roadside assistance, or using any services provided by Auto Repair Xperts Inc., you acknowledge that you have read, understood, and agree to these Terms and Conditions.
+    </div>
+
+    <div class="terms-section" id="s1">
+      <h2><span class="num">1.</span> Membership Eligibility</h2>
+      <ul>
+        <li>You must be at least 18 years old.</li>
+        <li>You must be the registered owner or authorized operator of the enrolled vehicle.</li>
+        <li>Membership applies only to the enrolled vehicle unless otherwise approved in writing.</li>
+        <li>Memberships are non-transferable unless authorized by the Company.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s2">
+      <h2><span class="num">2.</span> Membership Plans</h2>
+      <p>Membership plans include:</p>
+      <ul>
+        <li>Basic</li>
+        <li>Standard</li>
+        <li>Premium</li>
+      </ul>
+      <p>Each plan includes only the services specifically listed in the Membership Benefits Guide.</p>
+      <p>Unused services expire at the end of the membership period.</p>
+      <p>Membership benefits have no specific cash value.</p>
+    </div>
+
+    <div class="terms-section" id="s3">
+      <h2><span class="num">3.</span> Membership Benefits</h2>
+      <p>Benefits may include:</p>
+      <ul>
+        <li>Oil changes</li>
+        <li>Brake inspections</li>
+        <li>Tire rotations</li>
+        <li>Vehicle inspections</li>
+        <li>Check engine diagnostics</li>
+        <li>Battery boost services</li>
+        <li>Mobile tire assistance</li>
+        <li>Brake pad replacement</li>
+        <li>Anti-rust treatment</li>
+        <li>Belt replacement</li>
+        <li>Battery replacement</li>
+        <li>Fluid top-ups</li>
+        <li>Labour discounts</li>
+      </ul>
+      <p>Benefits cannot be exchanged for cash, transferred to another customer, transferred to another vehicle, or substituted for services not included in the selected membership.</p>
+    </div>
+
+    <div class="terms-section" id="s4">
+      <h2><span class="num">4.</span> Payment & Billing</h2>
+      <p>By purchasing a membership, you authorize the Company to charge your selected payment method.</p>
+      <p>Membership fees:</p>
+      <ul>
+        <li>Are payable in advance.</li>
+        <li>Are subject to applicable GST/HST (third-party fees may apply depending on your mode of payment).</li>
+        <li>Are non-refundable once any membership benefit has been redeemed, except where required by applicable law.</li>
+      </ul>
+      <p>Outstanding repair invoices remain payable regardless of membership status.</p>
+    </div>
+
+    <div class="terms-section" id="s5">
+      <h2><span class="num">5.</span> Automatic Renewal</h2>
+      <p>If Auto-Renew is selected, your membership will automatically renew using your saved payment method.</p>
+      <p>You may disable Auto-Renew at any time before your renewal date through your online account or by contacting us.</p>
+    </div>
+
+    <div class="terms-section" id="s6">
+      <h2><span class="num">6.</span> Appointment Policy</h2>
+      <p>Membership services are provided by appointment only. Appointments are subject to technician availability.</p>
+      <p>The Company reserves the right to reschedule appointments because of:</p>
+      <ul>
+        <li>Technician illness</li>
+        <li>Equipment failure</li>
+        <li>Parts shortages</li>
+        <li>Weather</li>
+        <li>Emergencies</li>
+        <li>Other operational requirements</li>
+      </ul>
+      <p>Repeated missed appointments may result in suspension of membership privileges.</p>
+    </div>
+
+    <div class="terms-section" id="s7">
+      <h2><span class="num">7.</span> Mobile & Roadside Assistance</h2>
+      <p>Where included:</p>
+      <ul>
+        <li>Service is available only during published operating hours.</li>
+        <li>Mobile assistance is limited to the geographic service area of 100km from the service station.</li>
+      </ul>
+      <p>The following are not included:</p>
+      <ul>
+        <li>Accident recovery</li>
+        <li>Winching</li>
+        <li>Vehicle extraction</li>
+        <li>Off-road recovery</li>
+        <li>Emergency services</li>
+      </ul>
+      <p>If roadside repair is not possible, the customer is responsible for arranging towing.</p>
+    </div>
+
+    <div class="terms-section" id="s8">
+      <h2><span class="num">8.</span> Customer Responsibilities</h2>
+      <p>Customers agree to:</p>
+      <ul>
+        <li>Provide accurate vehicle information.</li>
+        <li>Disclose known vehicle defects.</li>
+        <li>Maintain valid insurance, including adequate coverage for all perils including natural disasters.</li>
+        <li>Remove all valuables before leaving the vehicle.</li>
+        <li>Maintain legal registration of the vehicle.</li>
+      </ul>
+      <p>The Company is not responsible for the following items left in the vehicle:</p>
+      <ul>
+        <li>Cash</li>
+        <li>Electronics</li>
+        <li>Tools</li>
+        <li>Jewelry</li>
+        <li>Firearms</li>
+        <li>Personal documents</li>
+        <li>Other personal belongings</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s9">
+      <h2><span class="num">9.</span> Service Limitations</h2>
+      <p>Inspection reports represent the professional opinion of our technicians based on the condition of the vehicle at the time of inspection.</p>
+      <p>Because vehicle condition may change over time and hidden defects may not be discoverable without further disassembly, inspection reports should not be interpreted as guarantees regarding future vehicle performance.</p>
+      <p>The Company does not guarantee that every mechanical fault can be detected during a standard inspection.</p>
+    </div>
+
+    <div class="terms-section" id="s10">
+      <h2><span class="num">10.</span> Repairs & Estimates</h2>
+      <p>Repair estimates are based upon visible conditions at the time of inspection.</p>
+      <p>Additional defects discovered during repairs may require revised estimates and additional customer authorization.</p>
+      <p>No repair estimate constitutes a fixed-price quotation unless expressly stated in writing.</p>
+      <p>Labour outside the scope of subscription coverage is charged at the rate of <span class="rate-highlight">$140 per hour</span>.</p>
+    </div>
+
+    <div class="terms-section" id="s11">
+      <h2><span class="num">11.</span> Warranty</h2>
+      <p>Replacement parts remain subject to manufacturer warranty terms. Repairs performed using aftermarket or reconditioned parts are subject to the applicable supplier warranty.</p>
+      <p>The Company does not warrant:</p>
+      <ul>
+        <li>Normal wear and tear</li>
+        <li>Unrelated future mechanical failures</li>
+        <li>Failures caused by misuse, neglect, collision, modification, or lack of maintenance</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s12">
+      <h2><span class="num">12.</span> Limitation of Liability</h2>
+      <p>To the maximum extent permitted by law, the Company's total liability arising from any claim relating to a membership or service shall not exceed the amount paid by the customer for the specific service giving rise to the claim.</p>
+      <p>The Company shall not be liable for indirect, consequential, incidental, special, or punitive damages, including:</p>
+      <ul>
+        <li>Loss of income</li>
+        <li>Business interruption</li>
+        <li>Rental vehicle costs</li>
+        <li>Towing expenses</li>
+        <li>Loss of use</li>
+        <li>Diminished vehicle value</li>
+        <li>Missed appointments</li>
+        <li>Inconvenience</li>
+      </ul>
+      <p>Nothing in these Terms excludes liability where exclusion is prohibited by applicable law.</p>
+    </div>
+
+    <div class="terms-section" id="s13">
+      <h2><span class="num">13.</span> Release of Liability</h2>
+      <p>Except where caused by the Company's negligence or where prohibited by law, customers release the Company, its owners, employees, technicians, contractors, and agents from claims arising from:</p>
+      <ul>
+        <li>Pre-existing mechanical failures</li>
+        <li>Hidden defects</li>
+        <li>Manufacturer defects</li>
+        <li>Normal component wear</li>
+        <li>Third-party parts failures</li>
+        <li>Delays caused by suppliers</li>
+        <li>Weather events</li>
+        <li>Acts of God</li>
+        <li>Cyber incidents</li>
+        <li>Government restrictions</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s14">
+      <h2><span class="num">14.</span> Vehicle Storage</h2>
+      <p>Vehicles not collected within seven (3) days after notification may incur daily storage fees.</p>
+      <p>Vehicles abandoned on Company property may be dealt with in accordance with applicable provincial legislation.</p>
+    </div>
+
+    <div class="terms-section" id="s15">
+      <h2><span class="num">15.</span> Website Use</h2>
+      <p>Users agree not to:</p>
+      <ul>
+        <li>Attempt unauthorized access</li>
+        <li>Interfere with website operation</li>
+        <li>Upload malicious software</li>
+        <li>Copy Company intellectual property</li>
+        <li>Use the website for unlawful purposes</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s16">
+      <h2><span class="num">16.</span> Privacy Policy</h2>
+      <p>Personal information is collected, stored, and processed in accordance with applicable Canadian privacy legislation.</p>
+      <p>By using our services, you consent to the collection and use of your information for:</p>
+      <ul>
+        <li>Membership administration</li>
+        <li>Appointment scheduling</li>
+        <li>Repair history</li>
+        <li>Warranty administration</li>
+        <li>Customer communications</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s17">
+      <h2><span class="num">17.</span> Suspension or Termination</h2>
+      <p>The Company may suspend or terminate a membership immediately for:</p>
+      <ul>
+        <li>Fraud</li>
+        <li>Abusive behaviour</li>
+        <li>Misuse of membership benefits</li>
+        <li>Non-payment</li>
+        <li>Violation of these Terms</li>
+      </ul>
+      <p>Where appropriate, refunds will be calculated after deducting the retail value of benefits already received, administrative fees, and any outstanding balances.</p>
+    </div>
+
+    <div class="terms-section" id="s18">
+      <h2><span class="num">18.</span> Governing Law</h2>
+      <p>These Terms are governed by the laws of the Province of Alberta and the applicable federal laws of Canada.</p>
+      <p>Any legal proceeding shall be brought before the courts of Alberta unless otherwise required by law.</p>
+    </div>
+
+    <div class="terms-section" id="s19">
+      <h2><span class="num">19.</span> Company Privileges</h2>
+      <ul>
+        <li>The Company reserves the right to change its business address within the city of business without the approval of the subscriber.</li>
+        <li>The Company shall be at liberty to recommend parts brands suitable for the satisfactory quality service of the customer.</li>
+        <li>The determination of the aesthetic and structural condition of the vehicle, protection operations, addressing defects, decontamination, and depth of wear and repair shall be at the discretion of the Company.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section" id="s20">
+      <h2><span class="num">20.</span> Changes to These Terms</h2>
+      <p>The Company may revise these Terms from time to time. Material changes will be posted on this website before taking effect.</p>
+      <p>Continued use of the membership after the effective date constitutes acceptance of the revised Terms.</p>
+    </div>
+
+    <div class="terms-section" id="s21">
+      <h2><span class="num">21.</span> Contact Us</h2>
+      <div class="contact-box">
+        <p style="margin-bottom:0;">Questions about these Terms and Conditions can be directed to:</p>
+        <p style="margin-bottom:0;"><strong style="color:var(--white);">Auto Repair Xperts Inc.</strong></p>
+        <p style="margin-bottom:0;">Phone: <a href="tel:5874354463">(587) 435-4463</a></p>
+        <p style="margin-bottom:0;">Email: <a href="mailto:autorepairxperts@gmail.com">autorepairxperts@gmail.com</a></p>
+        <p style="margin-bottom:0;">Locations: 817 Sagehill Grove NW & 1115 48 Ave SE #4, Calgary, AB</p>
+      </div>
+    </div>
+
+    <div class="acceptance-box">
+      <h3>Required Acceptance Before Purchase</h3>
+      <p><span style="color:var(--red);">☐</span> I have read and agree to the Membership Terms & Conditions and understand that my membership will be governed by this agreement.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Auto Repair <span>Xperts</span></div>
+  <p class="footer-copy">© 2026 Auto Repair Xperts Inc. Calgary, Alberta. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#plans">Plans</a></li>
+    <li><a href="index.html#book">Book</a></li>
+    <li><a href="terms.html">Terms</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
