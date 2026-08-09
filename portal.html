@@ -1106,6 +1106,12 @@ let db;
 window.addEventListener('load', () => {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 });
+
+const BOOKING_BUFFER_MINUTES = 120;
+function timeToMinutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
 const PLANS = {
   Basic: {
     annualPrice: 600,
@@ -1604,18 +1610,23 @@ async function bookAppointment() {
   try {
     if (db && state.membershipId !== 'ADMIN') {
 
-      // CHECK FOR DOUBLE BOOKING — query Supabase first
-      const { data: existing, error: checkError } = await db
+      // CHECK FOR DOUBLE BOOKING — block anything within BOOKING_BUFFER_MINUTES
+      // of an existing appointment on the same day, not just an exact match
+      const { data: sameDayAppointments } = await db
         .from('appointments')
-        .select('id')
+        .select('appointment_time')
         .eq('appointment_date', date)
-        .eq('appointment_time', time)
-        .neq('status', 'Cancelled')
-        .single();
+        .neq('status', 'Cancelled');
 
-      if (existing) {
-        showToast('error', 'Time Slot Unavailable', `${date} at ${time} is already booked. Please choose a different date or time.`);
-        return;
+      if (sameDayAppointments && sameDayAppointments.length > 0) {
+        const requestedMinutes = timeToMinutes(time);
+        const conflict = sameDayAppointments.find(a =>
+          Math.abs(timeToMinutes(a.appointment_time) - requestedMinutes) < BOOKING_BUFFER_MINUTES
+        );
+        if (conflict) {
+          showToast('error', 'Time Slot Unavailable', `That time is too close to another appointment on ${date} (${conflict.appointment_time}). Please choose a time at least 2 hours before or after.`);
+          return;
+        }
       }
 
       // Time slot is free — go ahead and book
@@ -1819,6 +1830,8 @@ async function selectMember(id, name, email, plan) {
 }
 
 // LOAD ALL APPOINTMENTS
+let lastLoadedAppointments = [];
+
 async function loadAllAppointments() {
   const container = document.getElementById('allAppointmentsList');
   container.innerHTML = '<p style="color:var(--gray);font-size:13px;">Loading appointments...</p>';
@@ -1833,6 +1846,8 @@ async function loadAllAppointments() {
       container.innerHTML = '<p style="color:var(--gray);font-size:13px;">No appointments found.</p>';
       return;
     }
+
+    lastLoadedAppointments = apts;
 
     container.innerHTML = `
       <div style="display:flex;flex-direction:column;gap:12px;">
@@ -1869,9 +1884,32 @@ async function updateAppointmentStatus(id, newStatus, btn) {
   try {
     await db.from('appointments').update({ status: newStatus }).eq('id', id);
     showToast('success', `Appointment ${newStatus}`, `Status updated to ${newStatus} successfully.`);
+
+    if (newStatus === 'Confirmed') {
+      const apt = lastLoadedAppointments.find(a => a.id === id);
+      if (apt && apt.members && apt.members.email) {
+        sendConfirmationEmail(apt.members.email, apt.members.customer_name, apt.service, apt.appointment_date, apt.appointment_time);
+      }
+    }
+
     loadAllAppointments();
   } catch(err) {
     showToast('error', 'Error', 'Could not update appointment status.');
+  }
+}
+
+async function sendConfirmationEmail(to, customerName, service, date, time) {
+  try {
+    const res = await fetch('/api/send-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, customerName, service, date, time })
+    });
+    if (!res.ok) throw new Error('Email send failed');
+    showToast('success', 'Confirmation Emailed', `${customerName} has been emailed their appointment confirmation.`);
+  } catch (err) {
+    showToast('warning', 'Email Not Sent', `Appointment confirmed, but the confirmation email to ${customerName} could not be sent.`, 8000);
+    console.error(err);
   }
 }
 
