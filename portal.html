@@ -723,10 +723,14 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
     <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
       <p style="font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;text-align:center;">Staff Access</p>
       <div class="form-group" style="margin-bottom:12px;">
-        <label>Admin Password</label>
-        <input type="password" id="adminPassword" placeholder="Enter admin password" />
+        <label>Admin Email</label>
+        <input type="email" id="adminEmail" placeholder="admin@autorepairxperts.com" autocomplete="username" />
       </div>
-      <button class="btn-outline-red" onclick="adminLogin()" style="width:100%;">Admin Login</button>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter') adminLogin();" />
+      </div>
+      <button class="btn-outline-red" id="adminLoginBtn" onclick="adminLogin()" style="width:100%;">Admin Login</button>
     </div>
   </div>
 </div>
@@ -1105,8 +1109,9 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
 const SUPABASE_URL = 'https://dthftdrsmvnwrtxohitn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0aGZ0ZHJzbXZud3J0eG9oaXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTQ3OTksImV4cCI6MjA5NjM3MDc5OX0.yHx5GsehIEAbr80M7k5I_MYHif700TecFXBoc8QKDIs';
 let db;
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  await tryRestoreAdminSession();
 });
 
 const BOOKING_BUFFER_MINUTES = 120;
@@ -1384,24 +1389,81 @@ function demoLogin() {
   loadPortal();
 }
 
-function adminLogin() {
-  const password = document.getElementById("adminPassword").value;
-  const ADMIN_PASSWORD = "ARPX-ADMIN-2026";
-  if (password === ADMIN_PASSWORD) {
-    state = JSON.parse(JSON.stringify(DEMO));
-    state.isAdmin = true;
-    state.customerName = "Admin";
-    state.membershipId = "ADMIN";
-    loadPortal();
-  } else {
-    alert("Incorrect admin password. Contact support.");
+function enterAdminState() {
+  state = JSON.parse(JSON.stringify(DEMO));
+  state.isAdmin = true;
+  state.customerName = "Admin";
+  state.membershipId = "ADMIN";
+  loadPortal();
+}
+
+async function verifyIsAdmin(userId) {
+  try {
+    const { data, error } = await db.from('admin_users').select('user_id').eq('user_id', userId).single();
+    return !error && !!data;
+  } catch (e) {
+    console.error('Admin verification failed:', e);
+    return false;
   }
 }
 
-function handleLogout() {
+async function tryRestoreAdminSession() {
+  try {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session || !session.user) return;
+    const isAdminUser = await verifyIsAdmin(session.user.id);
+    if (isAdminUser) {
+      enterAdminState();
+    } else {
+      await db.auth.signOut();
+    }
+  } catch (e) {
+    console.error('Could not restore admin session:', e);
+  }
+}
+
+async function adminLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  if (!email || !password) { alert('Please enter admin email and password.'); return; }
+
+  const btn = document.getElementById('adminLoginBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Signing In...';
+
+  try {
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
+    if (error || !data.user) {
+      alert('Incorrect admin email or password.');
+      return;
+    }
+
+    const isAdminUser = await verifyIsAdmin(data.user.id);
+    if (!isAdminUser) {
+      await db.auth.signOut();
+      alert('This account is not authorized for admin access. Contact the site owner.');
+      return;
+    }
+
+    enterAdminState();
+  } catch (err) {
+    alert('Something went wrong signing in. Please try again.');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+async function handleLogout() {
+  const wasAdmin = state && state.isAdmin;
   state = null;
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('portalScreen').style.display = 'none';
+  if (wasAdmin) {
+    try { await db.auth.signOut(); } catch (e) { console.error('Sign out failed:', e); }
+  }
 }
 
 function loadPortal() {
