@@ -27,6 +27,27 @@
 -- Then come back here and run everything below.
 
 
+-- STEP 0.5 — remove any earlier permissive policies you may have already run.
+-- If you ran a version of this migration where every policy was `using (true)`
+-- with no admin check, those policies are still active even after this script
+-- runs its own CREATE POLICY statements below — Postgres combines multiple
+-- policies for the same table+action with OR, so a leftover `true` policy
+-- would keep allowing everyone through regardless of what this script adds.
+-- This block removes those specific policy names if they exist; it's a no-op
+-- (safe to run) if you never created them.
+drop policy if exists "Members can read own data" on members;
+drop policy if exists "Admin can insert members" on members;
+drop policy if exists "Admin can update members" on members;
+drop policy if exists "Members can read own benefits" on benefits_used;
+drop policy if exists "Admin can insert benefits" on benefits_used;
+drop policy if exists "Admin can update benefits" on benefits_used;
+drop policy if exists "Members can read own history" on service_history;
+drop policy if exists "Admin can insert history" on service_history;
+drop policy if exists "Members can read own appointments" on appointments;
+drop policy if exists "Anyone can insert appointments" on appointments;
+drop policy if exists "Admin can update appointments" on appointments;
+
+
 -- 1. Table marking which Supabase Auth users are admins/staff
 create table if not exists admin_users (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -165,6 +186,20 @@ create policy "admin delete appointments"
 
 
 -- ============================================================================
+-- STEP 9 — verify no stray permissive policy is left over from an earlier
+-- attempt. Run this SELECT and check every row in the "using_expr"/"check_expr"
+-- columns for insert/update/delete rows: they should all mention is_admin(),
+-- NEVER just "true" on its own. A bare "true" on insert/update/delete means
+-- something is still open to everyone — if you see one that isn't accounted
+-- for above (a name I didn't know to drop), drop that policy by its exact
+-- name shown here and re-run this file.
+--
+--   select schemaname, tablename, policyname, cmd,
+--          qual as using_expr, with_check as check_expr
+--   from pg_policies
+--   where tablename in ('members','benefits_used','service_history','appointments')
+--   order by tablename, cmd;
+--
 -- After running this: log into the portal's admin screen with the email +
 -- password you created in Step 0. The old ARPX-ADMIN-2026 password no
 -- longer works once the site code is deployed with the matching change.
