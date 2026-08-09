@@ -934,13 +934,13 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <div class="assistance-icon">🔋</div>
           <div class="assistance-title">Battery Boost</div>
           <div class="assistance-desc">Dead battery? We'll come to you and get you running again.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Battery Boost')">Request Now</button>
+          <button class="btn-outline-red" onclick="requestAssistance('Battery Boost', this)">Request Now</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🛞</div>
           <div class="assistance-title">Mobile Tire Help</div>
           <div class="assistance-desc">Flat tire anywhere within 100km. We bring the fix to you.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Mobile Tire Help')">Request Now</button>
+          <button class="btn-outline-red" onclick="requestAssistance('Mobile Tire Help', this)">Request Now</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🚗</div>
@@ -952,19 +952,19 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <div class="assistance-icon">🚛</div>
           <div class="assistance-title">Towing Service</div>
           <div class="assistance-desc">Towing within 100km. Available with Standard and Premium plans.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Towing')">Request Tow</button>
+          <button class="btn-outline-red" onclick="requestAssistance('Towing', this)">Request Tow</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">🚌</div>
           <div class="assistance-title">Shuttle Service</div>
           <div class="assistance-desc">Premium plan includes shuttle while your vehicle is being serviced.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Shuttle')">Request Shuttle</button>
+          <button class="btn-outline-red" onclick="requestAssistance('Shuttle', this)">Request Shuttle</button>
         </div>
         <div class="assistance-card">
           <div class="assistance-icon">📦</div>
           <div class="assistance-title">Pick-Up & Drop-Off</div>
           <div class="assistance-desc">We pick up your vehicle and return it when done. Premium only.</div>
-          <button class="btn-outline-red" onclick="requestAssistance('Pick-Up & Drop-Off')">Request Pick-Up</button>
+          <button class="btn-outline-red" onclick="requestAssistance('Pick-Up & Drop-Off', this)">Request Pick-Up</button>
         </div>
       </div>
       <p style="font-size:12px;color:var(--gray);margin-top:20px;">All mobile assistance is subject to availability and within 100km of Calgary. Emergency services are available 24/7.</p>
@@ -2064,25 +2064,36 @@ async function deleteMember(membershipId) {
   }
 }
 
-async function requestAssistance(type) {
-  const subject = encodeURIComponent('🚨 ASSISTANCE REQUEST — ' + type);
-  const body = encodeURIComponent([
-    'URGENT ASSISTANCE REQUEST',
-    '',
-    'Type: ' + type,
-    'Member: ' + state.customerName,
-    'Membership ID: ' + state.membershipId,
-    'Plan: ' + state.plan,
-    'Vehicle: ' + state.vehicle,
-    'Plate: ' + state.plate,
-    '',
-    'Time: ' + new Date().toLocaleString('en-CA'),
-    '',
-    'Please contact this member immediately.'
-  ].join('\n'));
+async function requestAssistance(type, btn) {
+  const originalLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
 
-  window.open(`mailto:christopherk4119@gmail.com?subject=${subject}&body=${body}`);
-  showToast('success', 'Request Ready', `Your email app has opened with a pre-filled ${type} request. Just hit send.`, 6000);
+  try {
+    const res = await fetch('https://formspree.io/f/mqeopqln', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        _subject: '🚨 ASSISTANCE REQUEST — ' + type,
+        request_type: type,
+        member: state.customerName,
+        membership_id: state.membershipId,
+        plan: state.plan,
+        vehicle: state.vehicle,
+        plate: state.plate,
+        requested_at: new Date().toLocaleString('en-CA'),
+        message: `URGENT ASSISTANCE REQUEST\n\nType: ${type}\nMember: ${state.customerName}\nMembership ID: ${state.membershipId}\nPlan: ${state.plan}\nVehicle: ${state.vehicle}\nPlate: ${state.plate}\n\nPlease contact this member immediately.`
+      })
+    });
+
+    if (!res.ok) throw new Error('Request failed');
+
+    showToast('success', 'Assistance Requested', `Your ${type} request has been sent. We'll contact you shortly — or call (587) 435-4463 for anything urgent.`, 7000);
+  } catch (err) {
+    showToast('error', 'Could Not Send Request', `Please call us directly at (587) 435-4463 for ${type}.`, 8000);
+    console.error(err);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
+  }
 }
 
 function showTab(name, btn) {
