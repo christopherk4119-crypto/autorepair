@@ -989,6 +989,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
       <div id="selectedMemberBadge" style="display:none;margin-top:16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:20px;">
         <div style="font-size:13px;margin-bottom:18px;">
           <span style="color:var(--gray);">Currently managing:</span> <strong id="selectedMemberName" style="color:#60A5FA;"></strong> — <span id="selectedMemberIdDisplay" style="color:var(--gray-light);"></span>
+          <div style="color:var(--gray);margin-top:4px;">Renewal date: <span id="selectedMemberRenewal" style="color:var(--gray-light);"></span></div>
         </div>
         <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">
           <div class="form-group" style="margin-bottom:0;min-width:220px;flex:1;">
@@ -1000,6 +1001,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
             </select>
           </div>
           <button class="btn-primary" style="max-width:160px;" onclick="changePlan()">Update Plan</button>
+          <button class="btn-secondary" style="max-width:190px;border-color:rgba(16,185,129,0.4);color:#10B981;" onclick="resetSelectedMemberBenefits()">🔄 Reset Usage & Renew</button>
           <button class="btn-secondary" style="max-width:170px;border-color:rgba(200,16,46,0.4);color:var(--red);" onclick="deleteSelectedMember()">🗑 Delete Member</button>
         </div>
       </div>
@@ -1111,6 +1113,45 @@ const BOOKING_BUFFER_MINUTES = 120;
 function timeToMinutes(t) {
   const [h, m] = t.split(':').map(Number);
   return h * 60 + m;
+}
+
+// RENEWAL / BENEFIT RESET HELPERS
+function isRenewalOverdue(renewalDateStr) {
+  if (!renewalDateStr) return false;
+  const renewal = new Date(renewalDateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return renewal < today;
+}
+
+// Advance a renewal date by one year at a time until it's no longer in the past
+// (handles a member who hasn't logged in for more than one renewal cycle)
+function catchUpRenewalDate(renewalDateStr) {
+  const renewal = new Date(renewalDateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  while (renewal < today) {
+    renewal.setFullYear(renewal.getFullYear() + 1);
+  }
+  return renewal.toISOString().slice(0, 10);
+}
+
+// Advance a renewal date by exactly one year, regardless of whether it's overdue
+function advanceRenewalDate(renewalDateStr) {
+  const d = new Date(renewalDateStr + 'T00:00:00');
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+async function resetBenefitUsage(membershipId, newRenewalDate) {
+  await db.from('benefits_used').delete().eq('membership_id', membershipId);
+  if (newRenewalDate) {
+    await db.from('members').update({ renewal_date: newRenewalDate }).eq('membership_id', membershipId);
+  }
+}
+
+function formatDateLong(dateStr) {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 const PLANS = {
   Basic: {
@@ -1277,9 +1318,21 @@ async function handleLogin() {
       .order('appointment_date', { ascending: false });
 
     // Build used object from benefits_used table
-    const used = {};
+    let used = {};
     if (benefitsData) {
       benefitsData.forEach(b => { used[b.benefit_key] = b.times_used; });
+    }
+
+    // If the renewal date has passed, treat it as a renewal: reset usage and
+    // roll the renewal date forward to the next un-expired anniversary
+    let renewalDate = member.renewal_date;
+    let justRenewed = false;
+    if (isRenewalOverdue(renewalDate)) {
+      const newRenewal = catchUpRenewalDate(renewalDate);
+      await resetBenefitUsage(id, newRenewal);
+      renewalDate = newRenewal;
+      used = {};
+      justRenewed = true;
     }
 
     // Build service history array
@@ -1304,7 +1357,7 @@ async function handleLogin() {
       membershipId: member.membership_id,
       plan: member.plan,
       status: member.status,
-      renewalDate: member.renewal_date,
+      renewalDate,
       vehicle: member.vehicle || 'N/A',
       plate: member.plate || 'N/A',
       isAdmin: false,
@@ -1314,6 +1367,10 @@ async function handleLogin() {
     };
 
     loadPortal();
+
+    if (justRenewed) {
+      showToast('success', 'Membership Renewed!', `Your benefits have reset for your new membership year. New renewal date: ${formatDateLong(renewalDate)}.`, 8000);
+    }
 
   } catch (err) {
     alert('Something went wrong. Please try again.');
@@ -1803,15 +1860,25 @@ async function selectMember(id, name, email, plan) {
     const { data: historyData } = await db.from('service_history').select('*').eq('membership_id', id).order('service_date', { ascending: false });
     const { data: appointmentsData } = await db.from('appointments').select('*').eq('membership_id', id).order('appointment_date', { ascending: false });
 
-    const used = {};
+    let used = {};
     if (benefitsData) benefitsData.forEach(b => { used[b.benefit_key] = b.times_used; });
+
+    let renewalDate = member.renewal_date;
+    let justRenewed = false;
+    if (isRenewalOverdue(renewalDate)) {
+      const newRenewal = catchUpRenewalDate(renewalDate);
+      await resetBenefitUsage(id, newRenewal);
+      renewalDate = newRenewal;
+      used = {};
+      justRenewed = true;
+    }
 
     state = {
       customerName: member.customer_name,
       membershipId: member.membership_id,
       plan: member.plan,
       status: member.status,
-      renewalDate: member.renewal_date,
+      renewalDate,
       vehicle: member.vehicle || 'N/A',
       plate: member.plate || 'N/A',
       isAdmin: true,
@@ -1822,11 +1889,41 @@ async function selectMember(id, name, email, plan) {
 
     document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + member.plan + ' Plan';
     document.getElementById('adminPlan').value = member.plan;
+    document.getElementById('selectedMemberRenewal').textContent = formatDateLong(renewalDate);
 
     renderAdminBenefits();
-    showToast('success', 'Member Loaded', `Now managing ${name}'s account.`);
+    if (justRenewed) {
+      showToast('success', 'Auto-Renewed', `${name}'s renewal date had passed — benefit usage was reset and renewal date moved to ${formatDateLong(renewalDate)}.`, 8000);
+    } else {
+      showToast('success', 'Member Loaded', `Now managing ${name}'s account.`);
+    }
   } catch(e) {
     showToast('error', 'Error', 'Could not load member data.');
+  }
+}
+
+async function resetSelectedMemberBenefits() {
+  if (!state || !state.membershipId || state.membershipId === 'ADMIN') {
+    showToast('error', 'No Member Selected', 'Search and select a member above first.');
+    return;
+  }
+
+  const confirmed = confirm(`Reset all benefit usage for ${state.customerName} and advance their renewal date by 1 year? This cannot be undone.`);
+  if (!confirmed) return;
+
+  try {
+    const newRenewal = advanceRenewalDate(state.renewalDate || new Date().toISOString().slice(0, 10));
+    await resetBenefitUsage(state.membershipId, newRenewal);
+
+    state.used = {};
+    state.renewalDate = newRenewal;
+    document.getElementById('selectedMemberRenewal').textContent = formatDateLong(newRenewal);
+    renderAll();
+    allMembersCache = [];
+    showToast('success', 'Usage Reset', `${state.customerName}'s benefit usage has been reset. New renewal date: ${formatDateLong(newRenewal)}.`);
+  } catch (err) {
+    showToast('error', 'Error', 'Could not reset benefit usage. Please try again.');
+    console.error(err);
   }
 }
 
