@@ -1699,17 +1699,29 @@ async function bookAppointment() {
       });
     }
 
-    // Notify client via Formspree
+    // Notify owner via Formspree
     try {
-      await fetch('https://formspree.io/f/mqeopqln', {
+      const notifyRes = await fetch('https://formspree.io/f/mqeopqln', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          subject: 'New Appointment Booked — ' + service,
+          _subject: 'New Appointment Booked — ' + service,
+          member: state.customerName,
+          membership_id: state.membershipId,
+          service,
+          date,
+          time,
+          notes: notes || 'None',
           message: `Member: ${state.customerName} (${state.membershipId})\nService: ${service}\nDate: ${date}\nTime: ${time}\nNotes: ${notes || 'None'}`
         })
       });
-    } catch(e) { console.log('Notification failed silently'); }
+      if (!notifyRes.ok) {
+        const body = await notifyRes.json().catch(() => null);
+        console.error('Owner notification failed:', notifyRes.status, body);
+      } else {
+        console.log('Owner notification sent for new booking.');
+      }
+    } catch(e) { console.error('Owner notification request threw an error:', e); }
 
     state.appointments.unshift({ service, date, time, status: 'Pending' });
     renderAppointments();
@@ -2033,6 +2045,27 @@ async function changePlan() {
   }
 
   const newPlan = document.getElementById('adminPlan').value;
+  const newPlanDef = PLANS[newPlan];
+  const oldPlanDef = PLANS[state.plan];
+
+  // Warn if this member has already used more of a benefit than the new plan includes
+  const overages = [];
+  for (const key in state.used) {
+    const used = state.used[key] || 0;
+    const newIncluded = newPlanDef.benefits[key] ? newPlanDef.benefits[key].included : 0;
+    if (used > newIncluded) {
+      const label = (oldPlanDef.benefits[key] && oldPlanDef.benefits[key].label) || key;
+      overages.push(`${label}: used ${used}, ${newPlan} only includes ${newIncluded}`);
+    }
+  }
+  if (overages.length > 0) {
+    const proceed = confirm(
+      `Heads up — ${state.customerName} has already used more than ${newPlan} allows for:\n\n` +
+      overages.join('\n') +
+      `\n\nThey'll show 0 remaining for these right after the switch. Continue anyway?`
+    );
+    if (!proceed) return;
+  }
 
   try {
     const { error } = await db.from('members').update({ plan: newPlan }).eq('membership_id', state.membershipId);
@@ -2253,12 +2286,22 @@ async function requestAssistance(type, btn) {
       })
     });
 
-    if (!res.ok) throw new Error('Request failed');
+    let responseBody = null;
+    try { responseBody = await res.json(); } catch (parseErr) { /* non-JSON response */ }
 
+    if (!res.ok) {
+      console.error('Formspree request failed:', res.status, responseBody);
+      const reason = responseBody && responseBody.errors
+        ? responseBody.errors.map(e => e.message).join('; ')
+        : `HTTP ${res.status}`;
+      throw new Error(reason);
+    }
+
+    console.log('Formspree accepted the request:', responseBody);
     showToast('success', 'Assistance Requested', `Your ${type} request has been sent. We'll contact you shortly — or call (587) 435-4463 for anything urgent.`, 7000);
   } catch (err) {
-    showToast('error', 'Could Not Send Request', `Please call us directly at (587) 435-4463 for ${type}.`, 8000);
-    console.error(err);
+    showToast('error', 'Could Not Send Request', `${err.message || 'Unknown error'} — please call us directly at (587) 435-4463 for ${type}.`, 10000);
+    console.error('requestAssistance failed:', err);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
   }
