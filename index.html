@@ -837,6 +837,18 @@
     cursor: not-allowed;
   }
 
+  .terms-hint {
+    font-size: 11.5px;
+    color: var(--red-light);
+    margin: -8px 0 14px 26px;
+    display: none;
+  }
+
+  .terms-agree input[disabled] {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
   /* OPEN BADGE */
   .open-badge {
     display: inline-flex;
@@ -951,6 +963,108 @@ function closeMenu() {
   </div>
 </section>
 
+<!-- PLANS -->
+<section class="plans" id="plans">
+  <div class="section-label">Membership Plans</div>
+  <h2 class="section-title">BECOME A MEMBER<br>&amp; SAVE THOUSANDS<br>PER YEAR.</h2>
+  <p class="section-sub">Choose a plan that fits your driving life. All plans include labour discounts, inspections, oil changes and more.</p>
+
+  <div class="plans-grid">
+    <!-- BASIC -->
+    <div class="plan-card">
+      <div class="plan-name">Basic</div>
+      <div class="plan-price">$600<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$1,630</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 5% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 General Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Secondary Inspection</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Tire Rotation</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Dashboard Diagnostic</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Tune-Up</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-basic" onchange="updatePlanButtonState('basic')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank" onclick="markTermsLinkClicked()">Membership Terms & Conditions</a></span>
+      </label>
+      <p class="terms-hint" id="termsHint-basic">↑ Open the Terms & Conditions first to unlock this checkbox.</p>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-45546f5c391a4948846d0530f3198b619ee111c0ff924edca03d17b1ffc2329f6dc2d0b209fc4b868fb22afd7ee4ba4b-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-basic" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'basic')">Get Basic Plan</a>
+    </div>
+
+    <!-- STANDARD -->
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Standard</div>
+      <div class="plan-price">$900<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$2,470</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 7% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 General Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Secondary Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Tire Repairs</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Dashboard Diagnostics</li>
+        <li class="plan-feature"><span class="check">✓</span> 4 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 6 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Belt Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Battery Boost (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Exterior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Interior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Towing (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> Priority Scheduling</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-standard" onchange="updatePlanButtonState('standard')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank" onclick="markTermsLinkClicked()">Membership Terms & Conditions</a></span>
+      </label>
+      <p class="terms-hint" id="termsHint-standard">↑ Open the Terms & Conditions first to unlock this checkbox.</p>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-2c6d0810fa6e415ebefcb1203b34752219e211a425834340889b9f925269fbbd6f015c90a08c49ccb23f36bf6f6feacc-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-standard" class="btn-primary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'standard')">Get Standard Plan</a>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="plan-card">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">$1,500<span>/year + GST</span></div>
+      <div class="plan-value">Approximate value: <strong>$4,550</strong></div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="check">✓</span> 10% Off All Labour</li>
+        <li class="plan-feature"><span class="check">✓</span> Up to 10 Inspections</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Synthetic Oil Changes</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Brake Pad Replacements</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Tire Repairs + Mobile</li>
+        <li class="plan-feature"><span class="check">✓</span> Up to 10 Diagnostics</li>
+        <li class="plan-feature"><span class="check">✓</span> 7 Fluid Top-Ups</li>
+        <li class="plan-feature"><span class="check">✓</span> 8 Tire Swaps</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Belt Replacements</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Battery Replacement</li>
+        <li class="plan-feature"><span class="check">✓</span> 2 Battery Boosts (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 1 Anti-Rust Coating</li>
+        <li class="plan-feature"><span class="check">✓</span> 5 Exterior + 2 Interior Detailing</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Emergency Roadside (100km)</li>
+        <li class="plan-feature"><span class="check">✓</span> 3 Towing (100km)</span></li>
+        <li class="plan-feature"><span class="check">✓</span> Shuttle + Pick-Up & Drop-Off</li>
+        <li class="plan-feature"><span class="check">✓</span> VIP Priority + Fast-Track</li>
+        <li class="plan-feature"><span class="check">✓</span> Loaner Vehicle (Subject to Avail.)</li>
+      </ul>
+      <label class="terms-agree">
+        <input type="checkbox" id="terms-premium" onchange="updatePlanButtonState('premium')" />
+        <span>I have read and agree to the <a href="terms.html" target="_blank" onclick="markTermsLinkClicked()">Membership Terms & Conditions</a></span>
+      </label>
+      <p class="terms-hint" id="termsHint-premium">↑ Open the Terms & Conditions first to unlock this checkbox.</p>
+      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-264955efd3f840128c84224b8b50286cc5e46bb5859c4529b223131232f1dcb99c09b84a91d04459be4cb2381be63755-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-premium" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'premium')">Get Premium Plan</a>
+    </div>
+  </div>
+
+  <p style="text-align:center;margin-top:32px;font-size:14px;color:var(--gray);">
+    Have multiple vehicles? <a href="#book" style="color:var(--red);text-decoration:none;font-weight:600;">Contact us for bundle pricing →</a>
+  </p>
+</section>
+
 <!-- TRUST BAR -->
 <div class="trust-bar">
   <div class="trust-item"><span class="trust-icon">🛡️</span> Licensed & Insured</div>
@@ -966,6 +1080,12 @@ function closeMenu() {
   <p class="section-sub">From routine maintenance to complex repairs — we handle it all with precision and honesty.</p>
 
   <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">🔍</span>
+      <h3>Vehicle Inspections</h3>
+      <p>Full general and secondary inspections that catch problems early — clear, honest reports on exactly what your vehicle needs.</p>
+      <span class="service-tag">Included in Plans</span>
+    </div>
     <div class="service-card">
       <span class="service-icon">🔧</span>
       <h3>Engine Diagnostics</h3>
@@ -1059,104 +1179,6 @@ function closeMenu() {
   </div>
 </section>
 
-<!-- PLANS -->
-<section class="plans" id="plans">
-  <div class="section-label">Membership Plans</div>
-  <h2 class="section-title">SAVE THOUSANDS<br>EVERY YEAR.</h2>
-  <p class="section-sub">Choose a plan that fits your driving life. All plans include labour discounts, inspections, oil changes and more.</p>
-
-  <div class="plans-grid">
-    <!-- BASIC -->
-    <div class="plan-card">
-      <div class="plan-name">Basic</div>
-      <div class="plan-price">$600<span>/year + GST</span></div>
-      <div class="plan-value">Approximate value: <strong>$1,630</strong></div>
-      <ul class="plan-features">
-        <li class="plan-feature"><span class="check">✓</span> 5% Off All Labour</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 General Inspections</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Secondary Inspection</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Synthetic Oil Changes</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Tire Rotation</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Dashboard Diagnostic</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Fluid Top-Ups</li>
-        <li class="plan-feature"><span class="check">✓</span> 4 Tire Swaps</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Tune-Up</li>
-      </ul>
-      <label class="terms-agree">
-        <input type="checkbox" id="terms-basic" onchange="updatePlanButtonState('basic')" />
-        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
-      </label>
-      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-45546f5c391a4948846d0530f3198b619ee111c0ff924edca03d17b1ffc2329f6dc2d0b209fc4b868fb22afd7ee4ba4b-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-basic" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'basic')">Get Basic Plan</a>
-    </div>
-
-    <!-- STANDARD -->
-    <div class="plan-card featured">
-      <div class="plan-badge">Most Popular</div>
-      <div class="plan-name">Standard</div>
-      <div class="plan-price">$900<span>/year + GST</span></div>
-      <div class="plan-value">Approximate value: <strong>$2,470</strong></div>
-      <ul class="plan-features">
-        <li class="plan-feature"><span class="check">✓</span> 7% Off All Labour</li>
-        <li class="plan-feature"><span class="check">✓</span> 4 General Inspections</li>
-        <li class="plan-feature"><span class="check">✓</span> 3 Secondary Inspections</li>
-        <li class="plan-feature"><span class="check">✓</span> 3 Synthetic Oil Changes</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Brake Pad Replacement</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Tire Repairs</li>
-        <li class="plan-feature"><span class="check">✓</span> 3 Dashboard Diagnostics</li>
-        <li class="plan-feature"><span class="check">✓</span> 4 Fluid Top-Ups</li>
-        <li class="plan-feature"><span class="check">✓</span> 6 Tire Swaps</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Belt Replacement</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Battery Boost (100km)</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Exterior Detailing</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Interior Detailing</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Towing (100km)</li>
-        <li class="plan-feature"><span class="check">✓</span> Priority Scheduling</li>
-      </ul>
-      <label class="terms-agree">
-        <input type="checkbox" id="terms-standard" onchange="updatePlanButtonState('standard')" />
-        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
-      </label>
-      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-2c6d0810fa6e415ebefcb1203b34752219e211a425834340889b9f925269fbbd6f015c90a08c49ccb23f36bf6f6feacc-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-standard" class="btn-primary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'standard')">Get Standard Plan</a>
-    </div>
-
-    <!-- PREMIUM -->
-    <div class="plan-card">
-      <div class="plan-name">Premium</div>
-      <div class="plan-price">$1,500<span>/year + GST</span></div>
-      <div class="plan-value">Approximate value: <strong>$4,550</strong></div>
-      <ul class="plan-features">
-        <li class="plan-feature"><span class="check">✓</span> 10% Off All Labour</li>
-        <li class="plan-feature"><span class="check">✓</span> Up to 10 Inspections</li>
-        <li class="plan-feature"><span class="check">✓</span> 5 Synthetic Oil Changes</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Brake Pad Replacements</li>
-        <li class="plan-feature"><span class="check">✓</span> 5 Tire Repairs + Mobile</li>
-        <li class="plan-feature"><span class="check">✓</span> Up to 10 Diagnostics</li>
-        <li class="plan-feature"><span class="check">✓</span> 7 Fluid Top-Ups</li>
-        <li class="plan-feature"><span class="check">✓</span> 8 Tire Swaps</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Belt Replacements</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Battery Replacement</li>
-        <li class="plan-feature"><span class="check">✓</span> 2 Battery Boosts (100km)</li>
-        <li class="plan-feature"><span class="check">✓</span> 1 Anti-Rust Coating</li>
-        <li class="plan-feature"><span class="check">✓</span> 5 Exterior + 2 Interior Detailing</li>
-        <li class="plan-feature"><span class="check">✓</span> 3 Emergency Roadside (100km)</li>
-        <li class="plan-feature"><span class="check">✓</span> 3 Towing (100km)</span></li>
-        <li class="plan-feature"><span class="check">✓</span> Shuttle + Pick-Up & Drop-Off</li>
-        <li class="plan-feature"><span class="check">✓</span> VIP Priority + Fast-Track</li>
-        <li class="plan-feature"><span class="check">✓</span> Loaner Vehicle (Subject to Avail.)</li>
-      </ul>
-      <label class="terms-agree">
-        <input type="checkbox" id="terms-premium" onchange="updatePlanButtonState('premium')" />
-        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
-      </label>
-      <a href="https://connect.intuit.com/pay/AutorepairXpertsBASIC/scs-v1-264955efd3f840128c84224b8b50286cc5e46bb5859c4529b223131232f1dcb99c09b84a91d04459be4cb2381be63755-0?locale=EN_CA&cta=saveandcopylink" target="_blank" id="planBtn-premium" class="btn-secondary btn-disabled" style="width:100%;text-align:center;display:block;" onclick="return handlePlanClick(event,'premium')">Get Premium Plan</a>
-    </div>
-  </div>
-
-  <p style="text-align:center;margin-top:32px;font-size:14px;color:var(--gray);">
-    Have multiple vehicles? <a href="#book" style="color:var(--red);text-decoration:none;font-weight:600;">Contact us for bundle pricing →</a>
-  </p>
-</section>
 
 <!-- REVIEWS -->
 <section class="reviews" id="reviews">
@@ -1293,8 +1315,9 @@ function closeMenu() {
       </div>
       <label class="terms-agree">
         <input type="checkbox" id="terms-booking" name="agreed_to_terms" required onchange="updateBookingButtonState()" />
-        <span>I have read and agree to the <a href="terms.html" target="_blank">Membership Terms & Conditions</a></span>
+        <span>I have read and agree to the <a href="terms.html" target="_blank" onclick="markTermsLinkClicked()">Membership Terms & Conditions</a></span>
       </label>
+      <p class="terms-hint" id="termsHint-booking">↑ Open the Terms & Conditions first to unlock this checkbox.</p>
       <button type="submit" id="bookSubmitBtn" class="btn-primary btn-disabled" style="width:100%;">Submit Booking Request</button>
       <p style="font-size:12px;color:var(--gray);margin-top:12px;text-align:center;">We'll confirm your appointment within 1 hour.</p>
       </form>
@@ -1317,8 +1340,28 @@ function closeMenu() {
 
 <script>
 const TERMS_AGREED_KEY = 'arpxTermsAgreed';
+const TERMS_VIEWED_KEY = 'arpxTermsViewed';
+const TERMS_CHECKBOX_KEYS = ['basic', 'standard', 'premium', 'booking'];
+
 function markTermsAgreed() { localStorage.setItem(TERMS_AGREED_KEY, 'true'); }
 function isTermsAgreed() { return localStorage.getItem(TERMS_AGREED_KEY) === 'true'; }
+function hasViewedTerms() { return localStorage.getItem(TERMS_VIEWED_KEY) === 'true'; }
+
+// Called when a Terms & Conditions link is clicked, in case it's opened in
+// the same tab — the new-tab case is handled by the focus listener below,
+// since terms.html sets the "viewed" flag itself once it actually loads.
+function markTermsLinkClicked() { setTimeout(refreshTermsGating, 300); }
+
+function refreshTermsGating() {
+  const viewed = hasViewedTerms();
+  TERMS_CHECKBOX_KEYS.forEach(key => {
+    const checkbox = document.getElementById('terms-' + key);
+    const hint = document.getElementById('termsHint-' + key);
+    if (!checkbox) return;
+    checkbox.disabled = !viewed;
+    if (hint) hint.style.display = viewed ? 'none' : 'block';
+  });
+}
 
 function updatePlanButtonState(plan) {
   const checkbox = document.getElementById('terms-' + plan);
@@ -1356,6 +1399,13 @@ function updateBookingButtonState() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Grandfather in anyone who already agreed before this "must open the
+  // terms page first" rule existed, so their checkbox isn't confusingly
+  // shown as checked-but-disabled.
+  if (isTermsAgreed()) localStorage.setItem(TERMS_VIEWED_KEY, 'true');
+
+  refreshTermsGating();
+
   if (!isTermsAgreed()) return;
   ['basic', 'standard', 'premium'].forEach(plan => {
     const cb = document.getElementById('terms-' + plan);
@@ -1363,6 +1413,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const bookingCb = document.getElementById('terms-booking');
   if (bookingCb) { bookingCb.checked = true; updateBookingButtonState(); }
+});
+
+window.addEventListener('focus', refreshTermsGating);
+window.addEventListener('storage', (e) => {
+  if (e.key === TERMS_VIEWED_KEY) refreshTermsGating();
 });
 </script>
 

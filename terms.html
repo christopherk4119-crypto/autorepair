@@ -411,6 +411,7 @@ function closeMenu() {
 }
 
 const TERMS_AGREED_KEY = 'arpxTermsAgreed';
+const TERMS_VIEWED_KEY = 'arpxTermsViewed';
 
 function handleAcceptTerms(checkbox) {
   const note = document.getElementById('acceptTermsNote');
@@ -423,6 +424,10 @@ function handleAcceptTerms(checkbox) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Mark that this page has actually been opened, so plan/booking checkboxes
+  // elsewhere on the site can require a real visit here before they unlock.
+  localStorage.setItem(TERMS_VIEWED_KEY, 'true');
+
   if (localStorage.getItem(TERMS_AGREED_KEY) === 'true') {
     document.getElementById('acceptTermsCheckbox').checked = true;
     document.getElementById('acceptTermsNote').style.display = 'block';
