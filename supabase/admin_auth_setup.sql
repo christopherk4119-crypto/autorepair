@@ -47,6 +47,21 @@ drop policy if exists "Members can read own appointments" on appointments;
 drop policy if exists "Anyone can insert appointments" on appointments;
 drop policy if exists "Admin can update appointments" on appointments;
 
+-- A second, differently-named permissive batch (members_select, benefits_insert,
+-- etc.) — same problem, different names. Drop these too.
+drop policy if exists "members_select" on members;
+drop policy if exists "members_insert" on members;
+drop policy if exists "members_update" on members;
+drop policy if exists "benefits_select" on benefits_used;
+drop policy if exists "benefits_insert" on benefits_used;
+drop policy if exists "benefits_update" on benefits_used;
+drop policy if exists "history_select" on service_history;
+drop policy if exists "history_insert" on service_history;
+drop policy if exists "appointments_select" on appointments;
+drop policy if exists "appointments_insert" on appointments;
+drop policy if exists "appointments_update" on appointments;
+drop policy if exists "appointments_delete" on appointments;
+
 
 -- 1. Table marking which Supabase Auth users are admins/staff
 create table if not exists admin_users (
@@ -186,13 +201,23 @@ create policy "admin delete appointments"
 
 
 -- ============================================================================
--- STEP 9 — verify no stray permissive policy is left over from an earlier
--- attempt. Run this SELECT and check every row in the "using_expr"/"check_expr"
--- columns for insert/update/delete rows: they should all mention is_admin(),
--- NEVER just "true" on its own. A bare "true" on insert/update/delete means
--- something is still open to everyone — if you see one that isn't accounted
--- for above (a name I didn't know to drop), drop that policy by its exact
--- name shown here and re-run this file.
+-- STEP 9 — verify. Run BOTH of these queries after everything above:
+--
+-- 9a. Confirm RLS is actually turned ON for all 4 tables (this repo's history
+--     includes an attempt that disabled it) — rowsecurity must be "true" for
+--     every row:
+--
+--   select relname as table_name, relrowsecurity as rls_enabled
+--   from pg_class
+--   where relname in ('members','benefits_used','service_history','appointments');
+--
+-- 9b. Confirm no stray permissive policy is left over from an earlier
+--     attempt. Check every row for insert/update/delete commands: the
+--     using_expr/check_expr should always mention is_admin(), NEVER just
+--     "true" on its own. A bare "true" on insert/update/delete means
+--     something is still open to everyone — if you see one that isn't
+--     accounted for above (a name this script didn't know to drop), drop
+--     that policy by its exact name shown here and re-run this file:
 --
 --   select schemaname, tablename, policyname, cmd,
 --          qual as using_expr, with_check as check_expr
