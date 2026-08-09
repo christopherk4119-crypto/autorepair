@@ -979,15 +979,29 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
 
     <!-- MEMBER SEARCH -->
     <div class="section-card">
-      <div class="section-card-title">🔍 Search Member</div>
-      <div class="section-card-sub">Search by name or email to load a specific member's account before making any changes.</div>
+      <div class="section-card-title">🔍 Find & Manage a Member</div>
+      <div class="section-card-sub">Search by name, email or membership ID. Pick a member to update their plan or delete their account.</div>
       <div class="form-group" style="max-width:400px;position:relative;">
-        <label>Member Name or Email</label>
-        <input type="text" id="memberSearch" placeholder="Start typing a name or email..." autocomplete="off" oninput="searchMembers()" />
+        <label>Name, Email or Membership ID</label>
+        <input type="text" id="memberSearch" placeholder="Start typing a name, email or ID..." autocomplete="off" oninput="searchMembers()" />
         <div id="memberSuggestions" style="position:absolute;top:100%;left:0;right:0;background:var(--black-4);border:1px solid rgba(37,99,235,0.3);border-radius:0 0 8px 8px;z-index:50;display:none;max-height:200px;overflow-y:auto;"></div>
       </div>
-      <div id="selectedMemberBadge" style="display:none;margin-top:12px;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:12px 16px;font-size:13px;">
-        <span style="color:var(--gray);">Currently managing:</span> <strong id="selectedMemberName" style="color:#60A5FA;"></strong> — <span id="selectedMemberIdDisplay" style="color:var(--gray-light);"></span>
+      <div id="selectedMemberBadge" style="display:none;margin-top:16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:20px;">
+        <div style="font-size:13px;margin-bottom:18px;">
+          <span style="color:var(--gray);">Currently managing:</span> <strong id="selectedMemberName" style="color:#60A5FA;"></strong> — <span id="selectedMemberIdDisplay" style="color:var(--gray-light);"></span>
+        </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">
+          <div class="form-group" style="margin-bottom:0;min-width:220px;flex:1;">
+            <label>Change Plan</label>
+            <select id="adminPlan">
+              <option value="Basic">Basic — $600/yr</option>
+              <option value="Standard">Standard — $900/yr</option>
+              <option value="Premium">Premium — $1,500/yr</option>
+            </select>
+          </div>
+          <button class="btn-primary" style="max-width:160px;" onclick="changePlan()">Update Plan</button>
+          <button class="btn-secondary" style="max-width:170px;border-color:rgba(200,16,46,0.4);color:var(--red);" onclick="deleteSelectedMember()">🗑 Delete Member</button>
+        </div>
       </div>
     </div>
 
@@ -1024,26 +1038,6 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
         </div>
       </div>
       <button class="btn-primary" style="max-width:220px;" onclick="markBenefitUsed()">Mark as Used</button>
-    </div>
-
-    <!-- CHANGE PLAN -->
-    <div class="section-card">
-      <div class="section-card-title">🔄 Change Membership Plan</div>
-      <div class="section-card-sub">Upgrade or downgrade the currently loaded member's plan.</div>
-      <div id="changePlanMemberInfo" style="font-size:13px;color:var(--gray);margin-bottom:16px;">No member loaded — search a member above first.</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>New Plan</label>
-          <select id="adminPlan">
-            <option value="Basic">Basic — $600/yr</option>
-            <option value="Standard">Standard — $900/yr</option>
-            <option value="Premium" selected>Premium — $1,500/yr</option>
-          </select>
-        </div>
-        <div style="display:flex;align-items:flex-end;padding-bottom:1px;">
-          <button class="btn-primary" style="max-width:180px;" onclick="changePlan()">Update Plan</button>
-        </div>
-      </div>
     </div>
 
     <!-- ADD NEW MEMBER -->
@@ -1788,7 +1782,7 @@ async function selectMember(id, name, email, plan) {
   document.getElementById('selectedMemberBadge').style.display = 'block';
   document.getElementById('selectedMemberName').textContent = name;
   document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + plan + ' Plan';
-  document.getElementById('changePlanMemberInfo').innerHTML = `Changing plan for: <strong style="color:#60A5FA;">${name}</strong> (${id})`;
+  document.getElementById('adminPlan').value = plan;
 
   // Load this member's full data
   try {
@@ -1813,6 +1807,9 @@ async function selectMember(id, name, email, plan) {
       serviceHistory: (historyData || []).map(h => ({ date: h.service_date, service: h.service, technician: h.technician || 'Staff', value: parseFloat(h.value) || 0, covered: h.covered })),
       appointments: (appointmentsData || []).map(a => ({ date: a.appointment_date, time: a.appointment_time, service: a.service, status: a.status }))
     };
+
+    document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + member.plan + ' Plan';
+    document.getElementById('adminPlan').value = member.plan;
 
     renderAdminBenefits();
     showToast('success', 'Member Loaded', `Now managing ${name}'s account.`);
@@ -1892,23 +1889,52 @@ async function deleteAppointmentPermanently(id) {
   }
 }
 
-function changePlan() {
-  const newPlan = document.getElementById('adminPlan').value;
-  state.plan = newPlan;
-  const plan = PLANS[newPlan];
-  for (const key in state.used) {
-    if (plan.benefits[key]) {
-      state.used[key] = Math.min(state.used[key] || 0, plan.benefits[key].included);
-    } else {
-      state.used[key] = 0;
-    }
+async function changePlan() {
+  if (!state || !state.membershipId || state.membershipId === 'ADMIN') {
+    showToast('error', 'No Member Selected', 'Search and select a member above first.');
+    return;
   }
-  document.getElementById('planBadge').textContent = newPlan + ' Plan';
-  document.getElementById('statPrice').textContent = '$' + plan.annualPrice.toLocaleString();
-  document.getElementById('discountPct').textContent = plan.labourDiscount + '%';
-  document.getElementById('statDiscount2').textContent = plan.labourDiscount + '%';
-  renderAll();
-  showToast('success', 'Plan Updated', `Membership plan changed to ${newPlan}.`);
+
+  const newPlan = document.getElementById('adminPlan').value;
+
+  try {
+    const { error } = await db.from('members').update({ plan: newPlan }).eq('membership_id', state.membershipId);
+    if (error) throw error;
+
+    state.plan = newPlan;
+    const plan = PLANS[newPlan];
+    for (const key in state.used) {
+      if (plan.benefits[key]) {
+        state.used[key] = Math.min(state.used[key] || 0, plan.benefits[key].included);
+      } else {
+        state.used[key] = 0;
+      }
+    }
+    document.getElementById('planBadge').textContent = newPlan + ' Plan';
+    document.getElementById('statPrice').textContent = '$' + plan.annualPrice.toLocaleString();
+    document.getElementById('discountPct').textContent = plan.labourDiscount + '%';
+    document.getElementById('statDiscount2').textContent = plan.labourDiscount + '%';
+    document.getElementById('selectedMemberIdDisplay').textContent = state.membershipId + ' · ' + newPlan + ' Plan';
+    renderAll();
+    allMembersCache = [];
+    showToast('success', 'Plan Updated', `${state.customerName}'s plan changed to ${newPlan} and saved.`);
+  } catch (err) {
+    showToast('error', 'Error', 'Could not update plan in the database. Please try again.');
+    console.error(err);
+  }
+}
+
+async function deleteSelectedMember() {
+  if (!state || !state.membershipId || state.membershipId === 'ADMIN') {
+    showToast('error', 'No Member Selected', 'Search and select a member above first.');
+    return;
+  }
+  const deleted = await deleteMember(state.membershipId, state.customerName);
+  if (deleted) {
+    document.getElementById('selectedMemberBadge').style.display = 'none';
+    document.getElementById('memberSearch').value = '';
+    allMembersCache = [];
+  }
 }
 
 async function addNewMember() {
@@ -2027,7 +2053,10 @@ async function loadAllMembers() {
                   <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);">${m.status}</span>
                 </td>
                 <td style="padding:12px;">
-                  <button onclick="deleteMember('${m.membership_id}')" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">🗑 Delete</button>
+                  <div style="display:flex;gap:6px;">
+                    <button onclick="selectMember('${m.membership_id}', '${m.customer_name}', '${m.email}', '${m.plan}'); document.getElementById('selectedMemberBadge').scrollIntoView({behavior:'smooth', block:'center'});" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">Manage</button>
+                    <button onclick="deleteMember('${m.membership_id}')" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">🗑 Delete</button>
+                  </div>
                 </td>
               </tr>
             `).join('')}
@@ -2041,12 +2070,12 @@ async function loadAllMembers() {
   }
 }
 
-async function deleteMember(membershipId) {
-  const member = lastLoadedMembers.find(m => m.membership_id === membershipId);
-  const name = member ? member.customer_name : membershipId;
+async function deleteMember(membershipId, knownName) {
+  const cached = lastLoadedMembers.find(m => m.membership_id === membershipId);
+  const name = knownName || (cached ? cached.customer_name : membershipId);
 
   const confirmed = confirm(`Delete member ${name} (${membershipId})? This will permanently remove their account, benefits usage, service history and appointments. This cannot be undone.`);
-  if (!confirmed) return;
+  if (!confirmed) return false;
 
   try {
     await db.from('benefits_used').delete().eq('membership_id', membershipId);
@@ -2058,9 +2087,11 @@ async function deleteMember(membershipId) {
 
     showToast('success', 'Member Deleted', `${name} has been permanently removed.`);
     loadAllMembers();
+    return true;
   } catch (err) {
     showToast('error', 'Error', 'Could not delete member. Please try again.');
     console.error(err);
+    return false;
   }
 }
 
