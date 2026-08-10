@@ -55,17 +55,34 @@
     letter-spacing: 2px;
     color: var(--white);
     text-decoration: none;
+    display: flex;
+    align-items: center;
   }
 
   .nav-logo span { color: var(--red); }
 
-  .nav-links {
+  .nav-logo img { height: 52px; width: auto; display: block; }
+
+  .nav-links-group {
     display: flex;
+    align-items: center;
     gap: 32px;
-    list-style: none;
   }
 
-  .nav-links a {
+  .nav-primary, .nav-links {
+    display: contents;
+  }
+  .nav-primary li, .nav-links li {
+    list-style: none;
+  }
+  .nav-primary li:nth-child(1) { order: 1; }
+  .nav-links li:nth-child(1) { order: 2; }
+  .nav-links li:nth-child(2) { order: 3; }
+  .nav-links li:nth-child(3) { order: 4; }
+  .nav-primary li:nth-child(2) { order: 5; }
+  .nav-primary li:nth-child(3) { order: 6; }
+
+  .nav-primary a, .nav-links a {
     color: var(--gray-light);
     text-decoration: none;
     font-size: 14px;
@@ -75,7 +92,7 @@
     transition: color 0.2s;
   }
 
-  .nav-links a:hover { color: var(--red); }
+  .nav-primary a:hover, .nav-links a:hover { color: var(--red); }
 
   .nav-cta {
     background: var(--red);
@@ -87,6 +104,8 @@
   }
 
   .nav-cta:hover { background: var(--red-light) !important; color: var(--white) !important; }
+
+  .nav-short-text { display: none; }
 
   /* PAGE HEADER */
   .page-header {
@@ -330,9 +349,13 @@
     font-size: 22px;
     letter-spacing: 2px;
     color: var(--white);
+    display: flex;
+    align-items: center;
   }
 
   .footer-logo span { color: var(--red); }
+
+  .footer-logo img { height: 42px; width: auto; display: block; }
 
   .footer-copy {
     font-size: 13px;
@@ -361,9 +384,19 @@
   }
 
   @media (max-width: 768px) {
+    nav { gap: 10px; padding: 0 4%; }
+    .nav-links-group { gap: 10px; }
+    .nav-primary { display: flex; align-items: center; gap: 12px; list-style: none; }
+    .nav-primary li { list-style: none; order: initial; }
+    .nav-primary a { font-size: 11px; padding: 0; letter-spacing: 0.3px; white-space: nowrap; }
+    .nav-primary .nav-cta { padding: 7px 10px; font-size: 10.5px; }
+    .nav-full-text { display: none; }
+    .nav-short-text { display: inline; }
+    .nav-logo img { height: 34px; }
+
     .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(10,10,10,0.98); border-bottom: 1px solid rgba(200,16,46,0.3); padding: 20px 5%; gap: 16px; z-index: 99; }
     .nav-links.open { display: flex; }
-    .nav-links li { list-style: none; }
+    .nav-links li { list-style: none; order: initial; }
     .nav-links a { font-size: 15px; padding: 8px 0; display: block; }
     .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
     .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
@@ -380,15 +413,19 @@
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">Auto Repair <span>Xperts</span></a>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="index.html#services" onclick="closeMenu()">Services</a></li>
-    <li><a href="index.html#plans" onclick="closeMenu()">Memberships</a></li>
-    <li><a href="index.html#reviews" onclick="closeMenu()">Reviews</a></li>
-    <li><a href="terms.html" style="color:var(--red);" onclick="closeMenu()">Terms</a></li>
-    <li><a href="portal.html" onclick="closeMenu()">Member Portal</a></li>
-    <li><a href="index.html#book" class="nav-cta" onclick="closeMenu()">Book Now</a></li>
-  </ul>
+  <a href="index.html" class="nav-logo"><img src="images/logo.png" alt="Auto Repair Xperts Inc" /></a>
+  <div class="nav-links-group">
+    <ul class="nav-primary">
+      <li><a href="index.html#services" onclick="closeMenu()">Services</a></li>
+      <li><a href="portal.html" onclick="closeMenu()"><span class="nav-full-text">Member Portal</span><span class="nav-short-text">Portal</span></a></li>
+      <li><a href="index.html#book" class="nav-cta" onclick="closeMenu()">Book Now</a></li>
+    </ul>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#plans" onclick="closeMenu()">Memberships</a></li>
+      <li><a href="index.html#reviews" onclick="closeMenu()">Reviews</a></li>
+      <li><a href="terms.html" style="color:var(--red);" onclick="closeMenu()">Terms</a></li>
+    </ul>
+  </div>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()">
     <span></span>
     <span></span>
@@ -744,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Auto Repair <span>Xperts</span></div>
+  <div class="footer-logo"><img src="images/logo.png" alt="Auto Repair Xperts Inc" /></div>
   <p class="footer-copy">© 2026 Auto Repair Xperts Inc. Calgary, Alberta. All rights reserved.</p>
   <ul class="footer-links">
     <li><a href="index.html#services">Services</a></li>

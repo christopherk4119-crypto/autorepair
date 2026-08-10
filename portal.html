@@ -86,9 +86,14 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
     letter-spacing: 2px;
     margin-bottom: 8px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .login-logo span { color: var(--red); }
+
+  .login-logo img { height: 64px; width: auto; display: block; }
 
   .login-sub {
     font-size: 13px;
@@ -271,9 +276,13 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
     font-family: var(--font-display);
     font-size: 20px;
     letter-spacing: 2px;
+    display: flex;
+    align-items: center;
   }
 
   .portal-logo span { color: var(--red); }
+
+  .portal-logo img { height: 40px; width: auto; display: block; }
 
   .portal-user {
     display: flex;
@@ -772,7 +781,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
   <div class="login-bg"></div>
   <div class="login-grid"></div>
   <div class="login-box">
-    <div class="login-logo">Auto Repair <span>Xperts</span></div>
+    <div class="login-logo"><img src="images/logo.png" alt="Auto Repair Xperts Inc" /></div>
     <div class="login-sub">Member Portal</div>
     <div class="form-group">
       <label>Email Address</label>
@@ -822,7 +831,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
 
   <!-- NAV -->
   <div class="portal-nav">
-    <div class="portal-logo">Auto Repair <span>Xperts</span></div>
+    <div class="portal-logo"><img src="images/logo.png" alt="Auto Repair Xperts Inc" /><span id="portalAdminBadge" style="display:none;font-size:13px;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:2px;letter-spacing:1px;margin-left:8px;">ADMIN</span></div>
     <div class="portal-user">
       <div class="portal-avatar" id="navAvatar">BA</div>
       <span class="portal-username" id="navName">Blessing A.</span>
@@ -1580,10 +1589,11 @@ function loadPortal() {
   if (isAdmin) {
     portalNav.style.background = 'rgba(139,0,0,0.98)';
     portalNav.style.borderBottom = '1px solid rgba(255,255,255,0.2)';
-    document.querySelector('.portal-logo').innerHTML = 'Auto Repair <span style="color:#fff">Xperts</span> <span style="font-size:13px;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:2px;letter-spacing:1px;margin-left:8px;">ADMIN</span>';
+    document.getElementById('portalAdminBadge').style.display = 'inline-block';
   } else {
     portalNav.style.background = '';
     portalNav.style.borderBottom = '';
+    document.getElementById('portalAdminBadge').style.display = 'none';
   }
 
   const initials = isAdmin ? 'AD' : state.customerName.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
