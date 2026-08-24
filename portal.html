@@ -1204,9 +1204,8 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
 const SUPABASE_URL = 'https://dthftdrsmvnwrtxohitn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0aGZ0ZHJzbXZud3J0eG9oaXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTQ3OTksImV4cCI6MjA5NjM3MDc5OX0.yHx5GsehIEAbr80M7k5I_MYHif700TecFXBoc8QKDIs';
 let db;
-window.addEventListener('load', async () => {
+window.addEventListener('load', () => {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  await tryRestoreAdminSession();
 });
 
 const BOOKING_BUFFER_MINUTES = 120;
@@ -1399,6 +1398,10 @@ async function handleLogin() {
   const id = document.getElementById('loginId').value.trim().toUpperCase();
   if (!email || !id) { alert('Please enter your email and membership ID.'); return; }
 
+  // A member login must never coexist with a leftover admin auth session -
+  // clear it unconditionally before doing anything else.
+  try { await db.auth.signOut(); } catch (e) { /* no session to clear, fine */ }
+
   try {
     // Query member from Supabase
     const { data: member, error } = await db
@@ -1519,21 +1522,6 @@ async function verifyIsAdmin(userId) {
   }
 }
 
-async function tryRestoreAdminSession() {
-  try {
-    const { data: { session } } = await db.auth.getSession();
-    if (!session || !session.user) return;
-    const isAdminUser = await verifyIsAdmin(session.user.id);
-    if (isAdminUser) {
-      enterAdminState();
-    } else {
-      await db.auth.signOut();
-    }
-  } catch (e) {
-    console.error('Could not restore admin session:', e);
-  }
-}
-
 async function adminLogin() {
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value;
@@ -1569,13 +1557,12 @@ async function adminLogin() {
 }
 
 async function handleLogout() {
-  const wasAdmin = state && state.isAdmin;
   state = null;
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('portalScreen').style.display = 'none';
-  if (wasAdmin) {
-    try { await db.auth.signOut(); } catch (e) { console.error('Sign out failed:', e); }
-  }
+  // Always attempt this, regardless of whether we think we were admin -
+  // guarantees no lingering auth session survives a logout.
+  try { await db.auth.signOut(); } catch (e) { console.error('Sign out failed:', e); }
 }
 
 function loadPortal() {
