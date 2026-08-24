@@ -1112,6 +1112,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
     <div class="section-card">
       <div class="section-card-title">⚙️ Mark Benefit Used</div>
       <div class="section-card-sub">Log a completed service for the currently loaded member.</div>
+      <div id="markBenefitMemberInfo" style="font-size:13px;color:var(--gray);margin-bottom:16px;padding:10px 14px;background:var(--black-4);border-radius:6px;border:1px solid rgba(255,255,255,0.06);">No member loaded — search and select a member above first.</div>
       <div class="form-row" style="margin-bottom:16px;">
         <div class="form-group">
           <label>Select Benefit</label>
@@ -1812,6 +1813,15 @@ function renderAdminBenefits() {
       sel.appendChild(opt);
     }
   }
+
+  const infoEl = document.getElementById('markBenefitMemberInfo');
+  if (infoEl) {
+    if (state.membershipId && state.membershipId !== 'ADMIN') {
+      infoEl.innerHTML = `Currently managing: <strong style="color:#60A5FA;">${escapeHtml(state.customerName)}</strong> — ${escapeHtml(state.membershipId)} · ${escapeHtml(state.plan)} Plan`;
+    } else {
+      infoEl.textContent = 'No member loaded — search and select a member above first.';
+    }
+  }
 }
 
 function showToast(type, title, message, duration = 5000) {
@@ -1915,6 +1925,11 @@ async function bookAppointment() {
 }
 
 async function markBenefitUsed() {
+  if (!state || !state.membershipId || state.membershipId === 'ADMIN') {
+    showToast('error', 'No Member Selected', 'Search and select a member above first.');
+    return;
+  }
+
   const key = document.getElementById('adminBenefit').value;
   const value = parseFloat(document.getElementById('adminValue').value) || 0;
   const tech = document.getElementById('adminTech').value || 'Admin';
@@ -1924,7 +1939,7 @@ async function markBenefitUsed() {
   if (remaining <= 0) { alert('No remaining uses for this benefit.'); return; }
 
   try {
-    if (db && state.membershipId !== 'DEMO') {
+    if (db) {
       const newCount = (state.used[key] || 0) + 1;
       const { data: existing } = await db
         .from('benefits_used')
