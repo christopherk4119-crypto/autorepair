@@ -1257,9 +1257,11 @@ function advanceRenewalDate(renewalDateStr) {
 }
 
 async function resetBenefitUsage(membershipId, newRenewalDate) {
-  await db.from('benefits_used').delete().eq('membership_id', membershipId);
+  const { error: deleteError } = await db.from('benefits_used').delete().eq('membership_id', membershipId);
+  if (deleteError) throw deleteError;
   if (newRenewalDate) {
-    await db.from('members').update({ renewal_date: newRenewalDate }).eq('membership_id', membershipId);
+    const { error: updateError } = await db.from('members').update({ renewal_date: newRenewalDate }).eq('membership_id', membershipId);
+    if (updateError) throw updateError;
   }
 }
 
@@ -1929,27 +1931,33 @@ async function markBenefitUsed() {
   try {
     if (db) {
       const newCount = (state.used[key] || 0) + 1;
-      const { data: existing } = await db
+      const { data: existing, error: selectError } = await db
         .from('benefits_used')
         .select('*')
         .eq('membership_id', state.membershipId)
         .eq('benefit_key', key)
         .single();
 
+      // PGRST116 = "no rows found", which is expected the first time a
+      // member uses this benefit. Any other error is a real failure.
+      if (selectError && selectError.code !== 'PGRST116') throw selectError;
+
       if (existing) {
-        await db.from('benefits_used')
+        const { error: updateError } = await db.from('benefits_used')
           .update({ times_used: newCount, updated_at: new Date().toISOString() })
           .eq('membership_id', state.membershipId)
           .eq('benefit_key', key);
+        if (updateError) throw updateError;
       } else {
-        await db.from('benefits_used').insert({
+        const { error: insertError } = await db.from('benefits_used').insert({
           membership_id: state.membershipId,
           benefit_key: key,
           times_used: newCount
         });
+        if (insertError) throw insertError;
       }
 
-      await db.from('service_history').insert({
+      const { error: historyError } = await db.from('service_history').insert({
         membership_id: state.membershipId,
         service_date: date,
         service: plan.benefits[key].label,
@@ -1957,6 +1965,7 @@ async function markBenefitUsed() {
         value,
         covered: true
       });
+      if (historyError) throw historyError;
     }
 
     state.used[key] = (state.used[key] || 0) + 1;
@@ -2003,9 +2012,9 @@ async function markBenefitUsed() {
       });
     } catch(e) { console.log('Confirmation email failed silently'); }
 
-    alert('✓ ' + plan.benefits[key].label + ' marked as used. Confirmation email sent to customer.');
+    showToast('success', 'Benefit Marked as Used', `${plan.benefits[key].label} recorded for ${state.customerName}.`);
   } catch (err) {
-    alert('Could not save. Please try again.');
+    showToast('error', 'Could Not Save', 'The service could not be saved to the database. Please try again.');
     console.error(err);
   }
 }
