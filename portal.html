@@ -1084,7 +1084,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <span style="color:var(--gray);">Currently managing:</span> <strong id="selectedMemberName" style="color:#60A5FA;"></strong> — <span id="selectedMemberIdDisplay" style="color:var(--gray-light);"></span>
           <div style="color:var(--gray);margin-top:4px;">Renewal date: <span id="selectedMemberRenewal" style="color:var(--gray-light);"></span></div>
         </div>
-        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;">
           <div class="form-group" style="margin-bottom:0;min-width:220px;flex:1;">
             <label>Change Plan</label>
             <select id="adminPlan">
@@ -1097,6 +1097,31 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <button class="btn-secondary" style="max-width:190px;border-color:rgba(16,185,129,0.4);color:#10B981;" onclick="resetSelectedMemberBenefits()">🔄 Reset Usage & Renew</button>
           <button class="btn-secondary" style="max-width:170px;border-color:rgba(200,16,46,0.4);color:var(--red);" onclick="deleteSelectedMember()">🗑 Delete Member</button>
         </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;">
+          <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:14px;">⚙️ Mark Benefit Used</div>
+          <div class="form-row" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label>Select Benefit</label>
+              <select id="adminBenefit"></select>
+            </div>
+            <div class="form-group">
+              <label>Retail Value (CAD)</label>
+              <input type="number" id="adminValue" placeholder="e.g. 120" value="120" />
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:20px;">
+            <div class="form-group">
+              <label>Technician Name</label>
+              <input type="text" id="adminTech" placeholder="e.g. Mike A." />
+            </div>
+            <div class="form-group">
+              <label>Service Date</label>
+              <input type="date" id="adminDate" />
+            </div>
+          </div>
+          <button class="btn-primary" style="max-width:220px;" onclick="markBenefitUsed()">Mark as Used</button>
+        </div>
       </div>
     </div>
 
@@ -1106,34 +1131,6 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
       <div class="section-card-sub">View all pending appointments and confirm or cancel them.</div>
       <button class="btn-secondary" style="max-width:200px;margin-bottom:20px;" onclick="loadAllAppointments()">Load All Appointments</button>
       <div id="allAppointmentsList"></div>
-    </div>
-
-    <!-- MARK BENEFIT USED -->
-    <div class="section-card">
-      <div class="section-card-title">⚙️ Mark Benefit Used</div>
-      <div class="section-card-sub">Log a completed service for the currently loaded member.</div>
-      <div id="markBenefitMemberInfo" style="font-size:13px;color:var(--gray);margin-bottom:16px;padding:10px 14px;background:var(--black-4);border-radius:6px;border:1px solid rgba(255,255,255,0.06);">No member loaded — search and select a member above first.</div>
-      <div class="form-row" style="margin-bottom:16px;">
-        <div class="form-group">
-          <label>Select Benefit</label>
-          <select id="adminBenefit"></select>
-        </div>
-        <div class="form-group">
-          <label>Retail Value (CAD)</label>
-          <input type="number" id="adminValue" placeholder="e.g. 120" value="120" />
-        </div>
-      </div>
-      <div class="form-row" style="margin-bottom:20px;">
-        <div class="form-group">
-          <label>Technician Name</label>
-          <input type="text" id="adminTech" placeholder="e.g. Mike A." />
-        </div>
-        <div class="form-group">
-          <label>Service Date</label>
-          <input type="date" id="adminDate" />
-        </div>
-      </div>
-      <button class="btn-primary" style="max-width:220px;" onclick="markBenefitUsed()">Mark as Used</button>
     </div>
 
     <!-- ADD NEW MEMBER -->
@@ -1811,15 +1808,6 @@ function renderAdminBenefits() {
       opt.value = key;
       opt.textContent = `${b.label} (${remaining} remaining)`;
       sel.appendChild(opt);
-    }
-  }
-
-  const infoEl = document.getElementById('markBenefitMemberInfo');
-  if (infoEl) {
-    if (state.membershipId && state.membershipId !== 'ADMIN') {
-      infoEl.innerHTML = `Currently managing: <strong style="color:#60A5FA;">${escapeHtml(state.customerName)}</strong> — ${escapeHtml(state.membershipId)} · ${escapeHtml(state.plan)} Plan`;
-    } else {
-      infoEl.textContent = 'No member loaded — search and select a member above first.';
     }
   }
 }
