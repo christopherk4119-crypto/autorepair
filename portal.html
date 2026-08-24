@@ -1268,6 +1268,19 @@ async function resetBenefitUsage(membershipId, newRenewalDate) {
 function formatDateLong(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+// Escapes free-text values (names, emails, notes, etc.) before they're
+// interpolated into innerHTML template strings, so stored data can't break
+// out into markup or attributes.
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 const PLANS = {
   Basic: {
     annualPrice: 600,
@@ -1721,9 +1734,9 @@ function renderHistory() {
   state.serviceHistory.forEach(item => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${item.date}</td>
-      <td style="color:var(--white);font-weight:500;">${item.service}</td>
-      <td>${item.technician}</td>
+      <td>${escapeHtml(item.date)}</td>
+      <td style="color:var(--white);font-weight:500;">${escapeHtml(item.service)}</td>
+      <td>${escapeHtml(item.technician)}</td>
       <td>$${item.value.toFixed(2)}</td>
       <td class="covered-yes">${item.covered ? '✓ Covered' : 'Not Covered'}</td>
     `;
@@ -1809,8 +1822,8 @@ function showToast(type, title, message, duration = 5000) {
   toast.innerHTML = `
     <div class="toast-icon">${icon}</div>
     <div>
-      <div class="toast-title">${title}</div>
-      <div class="toast-message">${message}</div>
+      <div class="toast-title">${escapeHtml(title)}</div>
+      <div class="toast-message">${escapeHtml(message)}</div>
     </div>
     <button class="toast-close" onclick="this.parentElement.remove()">×</button>
   `;
@@ -2015,25 +2028,23 @@ async function searchMembers() {
     if (matches.length === 0) { suggestions.style.display = 'none'; return; }
 
     suggestions.innerHTML = matches.map(m => `
-      <div onclick="selectMember('${m.membership_id}', '${m.customer_name}', '${m.email}', '${m.plan}')"
+      <div onclick="selectMember('${escapeHtml(m.membership_id)}')"
         style="padding:12px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;"
         onmouseover="this.style.background='rgba(37,99,235,0.1)'" onmouseout="this.style.background=''">
-        <strong style="color:var(--white);">${m.customer_name}</strong>
-        <span style="color:var(--gray);margin-left:8px;">${m.email}</span>
-        <span style="color:#60A5FA;margin-left:8px;font-size:11px;">${m.membership_id}</span>
+        <strong style="color:var(--white);">${escapeHtml(m.customer_name)}</strong>
+        <span style="color:var(--gray);margin-left:8px;">${escapeHtml(m.email)}</span>
+        <span style="color:#60A5FA;margin-left:8px;font-size:11px;">${escapeHtml(m.membership_id)}</span>
       </div>
     `).join('');
     suggestions.style.display = 'block';
   } catch(e) { suggestions.style.display = 'none'; }
 }
 
-async function selectMember(id, name, email, plan) {
-  document.getElementById('memberSearch').value = name;
+async function selectMember(id) {
   document.getElementById('memberSuggestions').style.display = 'none';
   document.getElementById('selectedMemberBadge').style.display = 'block';
-  document.getElementById('selectedMemberName').textContent = name;
-  document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + plan + ' Plan';
-  document.getElementById('adminPlan').value = plan;
+  document.getElementById('selectedMemberName').textContent = 'Loading…';
+  document.getElementById('selectedMemberIdDisplay').textContent = id;
 
   // Load this member's full data
   try {
@@ -2070,15 +2081,17 @@ async function selectMember(id, name, email, plan) {
       appointments: (appointmentsData || []).map(a => ({ date: a.appointment_date, time: a.appointment_time, service: a.service, status: a.status }))
     };
 
+    document.getElementById('memberSearch').value = member.customer_name;
+    document.getElementById('selectedMemberName').textContent = member.customer_name;
     document.getElementById('selectedMemberIdDisplay').textContent = id + ' · ' + member.plan + ' Plan';
     document.getElementById('adminPlan').value = member.plan;
     document.getElementById('selectedMemberRenewal').textContent = formatDateLong(renewalDate);
 
     renderAdminBenefits();
     if (justRenewed) {
-      showToast('success', 'Auto-Renewed', `${name}'s renewal date had passed — benefit usage was reset and renewal date moved to ${formatDateLong(renewalDate)}.`, 8000);
+      showToast('success', 'Auto-Renewed', `${member.customer_name}'s renewal date had passed — benefit usage was reset and renewal date moved to ${formatDateLong(renewalDate)}.`, 8000);
     } else {
-      showToast('success', 'Member Loaded', `Now managing ${name}'s account.`);
+      showToast('success', 'Member Loaded', `Now managing ${member.customer_name}'s account.`);
     }
   } catch(e) {
     showToast('error', 'Error', 'Could not load member data.');
@@ -2140,9 +2153,9 @@ async function loadAllAppointments() {
           return `
             <div style="background:var(--black-4);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;${isCancelled ? 'opacity:0.5;' : ''}">
               <div>
-                <div style="font-size:14px;font-weight:600;color:var(--white);">${a.service}</div>
-                <div style="font-size:12px;color:var(--gray-light);margin-top:2px;">${a.appointment_date} at ${a.appointment_time}</div>
-                <div style="font-size:12px;color:#60A5FA;margin-top:2px;">${memberName} ${memberEmail ? '· ' + memberEmail : ''}</div>
+                <div style="font-size:14px;font-weight:600;color:var(--white);">${escapeHtml(a.service)}</div>
+                <div style="font-size:12px;color:var(--gray-light);margin-top:2px;">${escapeHtml(a.appointment_date)} at ${escapeHtml(a.appointment_time)}</div>
+                <div style="font-size:12px;color:#60A5FA;margin-top:2px;">${escapeHtml(memberName)} ${memberEmail ? '· ' + escapeHtml(memberEmail) : ''}</div>
               </div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;${isPending ? 'background:rgba(251,191,36,0.1);color:#FBBF24;border:1px solid rgba(251,191,36,0.3);' : isCancelled ? 'background:rgba(255,255,255,0.05);color:var(--gray);border:1px solid rgba(255,255,255,0.1);' : 'background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);'}">● ${a.status}</span>
@@ -2323,15 +2336,15 @@ async function addNewMember() {
     resultEl.innerHTML = `
       <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:16px 20px;">
         <div style="font-size:13px;color:#10B981;font-weight:700;margin-bottom:8px;">✅ Member Added Successfully</div>
-        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Name:</strong> ${name}</div>
-        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Email:</strong> ${email}</div>
-        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Plan:</strong> ${plan}</div>
-        ${vin ? `<div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">VIN:</strong> ${vin}</div>` : ''}
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Name:</strong> ${escapeHtml(name)}</div>
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Email:</strong> ${escapeHtml(email)}</div>
+        <div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">Plan:</strong> ${escapeHtml(plan)}</div>
+        ${vin ? `<div style="font-size:13px;color:var(--gray-light);margin-bottom:4px;"><strong style="color:var(--white);">VIN:</strong> ${escapeHtml(vin)}</div>` : ''}
         <div style="font-size:15px;margin-top:12px;padding:10px 16px;background:var(--black-4);border-radius:6px;border:1px solid rgba(37,99,235,0.3);">
           <span style="color:var(--gray);font-size:11px;letter-spacing:1px;text-transform:uppercase;">Membership ID</span><br>
-          <strong style="color:#60A5FA;font-size:18px;letter-spacing:1px;">${membershipId}</strong>
+          <strong style="color:#60A5FA;font-size:18px;letter-spacing:1px;">${escapeHtml(membershipId)}</strong>
         </div>
-        <div style="font-size:12px;color:var(--gray);margin-top:10px;">📧 Send this ID to ${email} along with the portal link: autorepairxperts.com/portal</div>
+        <div style="font-size:12px;color:var(--gray);margin-top:10px;">📧 Send this ID to ${escapeHtml(email)} along with the portal link: autorepairxperts.com/portal</div>
       </div>
     `;
 
@@ -2387,21 +2400,21 @@ async function loadAllMembers() {
           <tbody>
             ${members.map(m => `
               <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                <td style="padding:12px;color:var(--white);font-weight:500;">${m.customer_name}</td>
-                <td style="padding:12px;color:var(--gray-light);">${m.email}</td>
-                <td style="padding:12px;color:#60A5FA;font-weight:600;">${m.membership_id}</td>
-                <td style="padding:12px;color:var(--gray-light);font-size:12px;">${m.vin || '—'}</td>
+                <td style="padding:12px;color:var(--white);font-weight:500;">${escapeHtml(m.customer_name)}</td>
+                <td style="padding:12px;color:var(--gray-light);">${escapeHtml(m.email)}</td>
+                <td style="padding:12px;color:#60A5FA;font-weight:600;">${escapeHtml(m.membership_id)}</td>
+                <td style="padding:12px;color:var(--gray-light);font-size:12px;">${escapeHtml(m.vin) || '—'}</td>
                 <td style="padding:12px;">
-                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(200,16,46,0.15);color:var(--red-light);border:1px solid rgba(200,16,46,0.3);">${m.plan}</span>
+                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(200,16,46,0.15);color:var(--red-light);border:1px solid rgba(200,16,46,0.3);">${escapeHtml(m.plan)}</span>
                 </td>
-                <td style="padding:12px;color:var(--gray-light);">${m.renewal_date}</td>
+                <td style="padding:12px;color:var(--gray-light);">${escapeHtml(m.renewal_date)}</td>
                 <td style="padding:12px;">
-                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);">${m.status}</span>
+                  <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3);">${escapeHtml(m.status)}</span>
                 </td>
                 <td style="padding:12px;">
                   <div style="display:flex;gap:6px;">
-                    <button onclick="selectMember('${m.membership_id}', '${m.customer_name}', '${m.email}', '${m.plan}'); document.getElementById('selectedMemberBadge').scrollIntoView({behavior:'smooth', block:'center'});" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">Manage</button>
-                    <button onclick="deleteMember('${m.membership_id}')" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">🗑 Delete</button>
+                    <button onclick="selectMember('${escapeHtml(m.membership_id)}'); document.getElementById('selectedMemberBadge').scrollIntoView({behavior:'smooth', block:'center'});" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">Manage</button>
+                    <button onclick="deleteMember('${escapeHtml(m.membership_id)}')" style="background:rgba(200,16,46,0.1);border:1px solid rgba(200,16,46,0.3);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;">🗑 Delete</button>
                   </div>
                 </td>
               </tr>
