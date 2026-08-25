@@ -1416,38 +1416,28 @@ async function handleLogin() {
   try { await db.auth.signOut(); } catch (e) { /* no session to clear, fine */ }
 
   try {
-    // Query member from Supabase
-    const { data: member, error } = await db
-      .from('members')
-      .select('*')
-      .eq('email', email)
-      .eq('membership_id', id)
-      .single();
+    // Member lookup runs server-side (api/member-login.js) with a private
+    // key, so the browser never needs (and no longer has) direct read
+    // access to the members/benefits_used/service_history/appointments
+    // tables. The server only ever returns data for the one exact
+    // email + membership ID match sent here.
+    const loginRes = await fetch('/api/member-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, membershipId: id })
+    });
+    const loginData = await loginRes.json().catch(() => ({}));
 
-    if (error || !member) {
-      alert('Membership not found. Please check your email and membership ID.');
+    if (!loginRes.ok) {
+      alert(loginData.error || 'Membership not found. Please check your email and membership ID.');
       return;
     }
 
-    // Get benefits used
-    const { data: benefitsData } = await db
-      .from('benefits_used')
-      .select('*')
-      .eq('membership_id', id);
-
-    // Get service history
-    const { data: historyData } = await db
-      .from('service_history')
-      .select('*')
-      .eq('membership_id', id)
-      .order('service_date', { ascending: false });
-
-    // Get appointments
-    const { data: appointmentsData } = await db
-      .from('appointments')
-      .select('*')
-      .eq('membership_id', id)
-      .order('appointment_date', { ascending: false });
+    const member = loginData.member;
+    const benefitsData = loginData.benefits;
+    const historyData = loginData.history;
+    const appointmentsData = loginData.appointments;
+    const justRenewed = loginData.justRenewed;
 
     // Build used object from benefits_used table
     let used = {};
@@ -1455,17 +1445,7 @@ async function handleLogin() {
       benefitsData.forEach(b => { used[b.benefit_key] = b.times_used; });
     }
 
-    // If the renewal date has passed, treat it as a renewal: reset usage and
-    // roll the renewal date forward to the next un-expired anniversary
-    let renewalDate = member.renewal_date;
-    let justRenewed = false;
-    if (isRenewalOverdue(renewalDate)) {
-      const newRenewal = catchUpRenewalDate(renewalDate);
-      await resetBenefitUsage(id, newRenewal);
-      renewalDate = newRenewal;
-      used = {};
-      justRenewed = true;
-    }
+    const renewalDate = member.renewal_date;
 
     // Build service history array
     const serviceHistory = (historyData || []).map(h => ({
@@ -1487,6 +1467,7 @@ async function handleLogin() {
     state = {
       customerName: member.customer_name,
       membershipId: member.membership_id,
+      email: member.email,
       plan: member.plan,
       status: member.status,
       renewalDate,
@@ -1782,12 +1763,16 @@ async function cancelAppointment(index) {
   if (!confirmed) return;
 
   try {
-    if (db && state.membershipId !== 'ADMIN') {
-      await db.from('appointments')
-        .update({ status: 'Cancelled' })
-        .eq('membership_id', state.membershipId)
-        .eq('appointment_date', apt.date)
-        .eq('appointment_time', apt.time);
+    if (state.membershipId !== 'ADMIN') {
+      const res = await fetch('/api/member-cancel-appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: state.email, membershipId: state.membershipId, date: apt.date, time: apt.time })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Cancel failed');
+      }
     }
     state.appointments[index].status = 'Cancelled';
     renderAppointments();
@@ -1852,26 +1837,32 @@ async function bookAppointment() {
     if (db && state.membershipId !== 'ADMIN') {
 
       // CHECK FOR DOUBLE BOOKING — block anything within BOOKING_BUFFER_MINUTES
-      // of an existing appointment on the same day, not just an exact match
-      const { data: sameDayAppointments } = await db
-        .from('appointments')
-        .select('appointment_time')
-        .eq('appointment_date', date)
-        .neq('status', 'Cancelled');
+      // of an existing appointment on the same day, not just an exact match.
+      // Runs through a server function since the browser can no longer read
+      // the appointments table directly (see lock_down_public_reads.sql) -
+      // it only ever gets back a bare list of times, no customer data.
+      const availRes = await fetch('/api/check-availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date })
+      });
+      const availData = await availRes.json().catch(() => ({}));
+      if (!availRes.ok) throw new Error(availData.error || 'Could not check availability');
+      const bookedTimes = availData.bookedTimes || [];
 
-      if (sameDayAppointments && sameDayAppointments.length > 0) {
+      if (bookedTimes.length > 0) {
         const requestedMinutes = timeToMinutes(time);
-        const conflict = sameDayAppointments.find(a =>
-          Math.abs(timeToMinutes(a.appointment_time) - requestedMinutes) < BOOKING_BUFFER_MINUTES
+        const conflict = bookedTimes.find(t =>
+          Math.abs(timeToMinutes(t) - requestedMinutes) < BOOKING_BUFFER_MINUTES
         );
         if (conflict) {
-          showToast('error', 'Time Slot Unavailable', `That time is too close to another appointment on ${date} (${conflict.appointment_time}). Please choose a time at least 2 hours before or after.`);
+          showToast('error', 'Time Slot Unavailable', `That time is too close to another appointment on ${date} (${conflict}). Please choose a time at least 2 hours before or after.`);
           return;
         }
       }
 
       // Time slot is free — go ahead and book
-      await db.from('appointments').insert({
+      const { error: bookError } = await db.from('appointments').insert({
         membership_id: state.membershipId,
         service,
         appointment_date: date,
@@ -1879,6 +1870,7 @@ async function bookAppointment() {
         notes,
         status: 'Pending'
       });
+      if (bookError) throw bookError;
     }
 
     // Notify owner via Formspree
@@ -2188,7 +2180,8 @@ async function loadAllAppointments() {
 
 async function updateAppointmentStatus(id, newStatus, btn) {
   try {
-    await db.from('appointments').update({ status: newStatus }).eq('id', id);
+    const { error } = await db.from('appointments').update({ status: newStatus }).eq('id', id);
+    if (error) throw error;
     showToast('success', `Appointment ${newStatus}`, `Status updated to ${newStatus} successfully.`);
 
     if (newStatus === 'Confirmed') {
@@ -2456,9 +2449,12 @@ async function deleteMember(membershipId, knownName) {
   if (!confirmed) return false;
 
   try {
-    await db.from('benefits_used').delete().eq('membership_id', membershipId);
-    await db.from('service_history').delete().eq('membership_id', membershipId);
-    await db.from('appointments').delete().eq('membership_id', membershipId);
+    const { error: benefitsError } = await db.from('benefits_used').delete().eq('membership_id', membershipId);
+    if (benefitsError) throw benefitsError;
+    const { error: historyError } = await db.from('service_history').delete().eq('membership_id', membershipId);
+    if (historyError) throw historyError;
+    const { error: appointmentsError } = await db.from('appointments').delete().eq('membership_id', membershipId);
+    if (appointmentsError) throw appointmentsError;
 
     const { error } = await db.from('members').delete().eq('membership_id', membershipId);
     if (error) throw error;
