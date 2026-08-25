@@ -2323,7 +2323,7 @@ async function addNewMember() {
   const membershipId = `${prefix}-${num}`;
 
   try {
-    const { error } = await db.from('members').insert({
+    const newMember = {
       email,
       membership_id: membershipId,
       customer_name: name,
@@ -2331,13 +2331,20 @@ async function addNewMember() {
       status: 'Active',
       renewal_date: renewal,
       vehicle,
-      plate,
-      vin
-    });
+      plate
+    };
+    // Only send vin if the database has the column (added via
+    // supabase/add_vin_column.sql) — omitting it when empty means Add
+    // Member still works even before that migration has been run.
+    if (vin) newMember.vin = vin;
+
+    const { error } = await db.from('members').insert(newMember);
 
     if (error) {
       if (error.message.includes('duplicate') || error.message.includes('unique')) {
         showToast('error', 'Email Already Exists', 'A member with this email already exists.');
+      } else if (error.message.includes("'vin' column")) {
+        showToast('error', 'VIN Not Set Up Yet', 'The database needs a one-time update before VIN can be saved. Leave VIN blank for now, or run supabase/add_vin_column.sql in the Supabase SQL Editor.');
       } else {
         showToast('error', 'Error', error.message);
       }
