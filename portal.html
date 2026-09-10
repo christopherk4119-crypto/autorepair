@@ -881,7 +881,7 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
       <div class="stat-card">
         <div class="stat-icon">💳</div>
         <div class="stat-label">Annual Plan Price</div>
-        <div class="stat-value red" id="statPrice">$1,500</div>
+        <div class="stat-value red" id="statPrice">$3,200</div>
         <div class="stat-detail">+ GST per year</div>
       </div>
       <div class="stat-card">
@@ -1088,9 +1088,9 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
           <div class="form-group" style="margin-bottom:0;min-width:220px;flex:1;">
             <label>Change Plan</label>
             <select id="adminPlan">
-              <option value="Basic">Basic — $600/yr</option>
-              <option value="Standard">Standard — $900/yr</option>
-              <option value="Premium">Premium — $1,500/yr</option>
+              <option value="Basic">Basic — $800/yr</option>
+              <option value="Standard">Standard — $1,400/yr</option>
+              <option value="Premium">Premium — $3,200/yr</option>
             </select>
           </div>
           <button class="btn-primary" style="max-width:160px;" onclick="changePlan()">Update Plan</button>
@@ -1151,9 +1151,9 @@ const QUICKBOOKS_PREMIUM = 'https://connect.intuit.com/pay/AutorepairXpertsBASIC
         <div class="form-group">
           <label>Membership Plan</label>
           <select id="newMemberPlan">
-            <option value="Basic">Basic — $600/yr</option>
-            <option value="Standard">Standard — $900/yr</option>
-            <option value="Premium">Premium — $1,500/yr</option>
+            <option value="Basic">Basic — $800/yr</option>
+            <option value="Standard">Standard — $1,400/yr</option>
+            <option value="Premium">Premium — $3,200/yr</option>
           </select>
         </div>
         <div class="form-group">
@@ -1283,7 +1283,7 @@ function escapeHtml(str) {
 }
 const PLANS = {
   Basic: {
-    annualPrice: 600,
+    annualPrice: 800,
     labourDiscount: 5,
     benefits: {
       generalInspections: { label: "General Inspections", included: 2 },
@@ -1309,7 +1309,7 @@ const PLANS = {
     }
   },
   Standard: {
-    annualPrice: 900,
+    annualPrice: 1400,
     labourDiscount: 7,
     benefits: {
       generalInspections: { label: "General Inspections", included: 4 },
@@ -1335,7 +1335,7 @@ const PLANS = {
     }
   },
   Premium: {
-    annualPrice: 1500,
+    annualPrice: 3200,
     labourDiscount: 10,
     benefits: {
       generalInspections: { label: "General Inspections", included: 10 },
