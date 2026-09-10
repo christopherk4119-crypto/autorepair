@@ -20,7 +20,7 @@
 
 -- STEP 0 — create the admin login (do this first, in the dashboard UI):
 --   Authentication → Users → Add user
---   Email: whatever you want staff to log in with (e.g. admin@autorepairxperts.com)
+--   Email: whatever you want staff to log in with (e.g. admin@autorepairxperts.ca)
 --   Password: a strong password — this replaces ARPX-ADMIN-2026 entirely
 --   Auto Confirm User: ON (so it doesn't require an email confirmation click)
 --
