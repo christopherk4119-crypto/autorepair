@@ -1875,7 +1875,7 @@ async function bookAppointment() {
 
     // Notify owner via Formspree
     try {
-      const notifyRes = await fetch('https://formspree.io/f/mqeopqln', {
+      const notifyRes = await fetch('https://formspree.io/f/xqpaeprq', {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1973,7 +1973,7 @@ async function markBenefitUsed() {
     // Send confirmation email to customer via Formspree
     try {
       const newRemaining = Math.max(plan.benefits[key].included - state.used[key], 0);
-      await fetch('https://formspree.io/f/mqeopqln', {
+      await fetch('https://formspree.io/f/xqpaeprq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
